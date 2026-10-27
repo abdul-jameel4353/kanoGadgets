@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Seller Rules &amp; Regulations — KanoGadgets.com{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:36px">
+  <div class="form-card">
+    <h2 style="margin:0;font:800 22px var(--font-h);color:#fff">Seller Rules &amp; Regulations</h2>
+    <p class="muted" style="margin-bottom:18px">Every seller must read and agree to these rules before publishing.</p>
+
+    <ol style="color:#C6D2E6;spacing:26px;line-height:1.7;padding-left:22px">
+      <li>Only people who genuinely work in Kano's Gadget Center may apply to sell on the platform.</li>
+      <li>Sellers must provide truthful identity and shop information.</li>
+      <li>Product names, descriptions, prices, photographs and condition must be accurate.</li>
+      <li>Counterfeit, stolen, fraudulent, prohibited or otherwise unlawful products are not allowed.</li>
+      <li>Sellers must provide a valid WhatsApp contact number.</li>
+      <li>Sellers must communicate honestly and professionally with customers.</li>
+      <li>Fake listings, scams and repeated misleading conduct may result in suspension.</li>
+      <li>Administrators may remove harmful, fraudulent, misleading or prohibited listings.</li>
+      <li>Sellers must respect customers' privacy and handle their personal information responsibly.</li>
+      <li>Sellers must not misuse the marketplace or attempt to access another seller's account.</li>
+      <li>Sellers must comply with applicable laws and the marketplace's published policies.</li>
+      <li>The marketplace may suspend or terminate accounts for serious or repeated violations.</li>
+    </ol>
+
+    <div class="form-card" style="background:#090E18;border:1px solid var(--line);padding:16px;margin-top:20px">
+      <div class="check" style="margin:0"><input type="checkbox" disabled checked style="margin-top:3px">
+        <span style="font-size:13.5px;color:#9FB2CF">I have read and agree to the KanoGadgets.com Seller Rules &amp; Regulations.</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:24px">
+      {% if back %}<a class="btn btn-ghost" href="{{ url_for(back) }}">← Back to Dashboard</a>{% endif %}
+      <a class="btn btn-primary" href="{{ url_for('become_seller') }}">Apply to Become a Seller</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

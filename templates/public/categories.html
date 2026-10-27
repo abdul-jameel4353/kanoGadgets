@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Categories — KanoGadgets.com{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-head"><h2>Browse Categories</h2></div>
+  <p class="muted" style="margin-bottom:24px">Find gadgets by what you're actually shopping for.</p>
+  <div class="cat-grid">
+    {% for c in cats %}
+    <a class="cat-card" href="{{ url_for('category_page', slug=c.slug) }}">
+      <div class="ph"><img src="{{ url_for('static', filename=c.image) if c.image else url_for('static', filename='cat/other.png') }}" alt="{{ c.name }}" loading="lazy"></div>
+      <div class="nm">{{ c.name }}</div>
+      <small>{{ c.description or 'Browse the collection' }}</small>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

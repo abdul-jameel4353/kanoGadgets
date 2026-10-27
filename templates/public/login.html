@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Sign In — KanoGadgets.com{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:44px">
+  <div class="form-card">
+    <h2 style="margin:0 0 4px;font:800 22px var(--font-h);color:#fff">Welcome back</h2>
+    <p class="muted" style="font-size:13.5px;margin-bottom:22px">Sign in to manage your shop or the marketplace.</p>
+
+    <form method="post">
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" name="email" placeholder="you@gmail.com" required autofocus>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="••••••••" required>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Sign in</button>
+    </form>
+
+    <p class="muted" style="font-size:12.5px;margin-top:18px;text-align:center">
+      Don't have a seller account? <a href="{{ url_for('become_seller') }}">Become a Seller</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

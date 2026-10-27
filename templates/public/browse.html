@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Browse Gadgets — KanoGadgets.com{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-head">
+    <div>
+      <h2>{{ "Search results" if search else "All Gadgets" }}{% if search %} for "{{ search }}"{% endif %}</h2>
+      <p class="muted" style="font-size:13.5px">{{ products|length }} result{{ 's' if products|length != 1 }}</p>
+    </div>
+    <div style="display:flex;gap:10px">
+      <select id="sort" onchange="applySort(this.value)">
+        <option value="latest" {% if sel_sort=='latest' %}selected{% endif %}>Newest</option>
+        <option value="price_asc" {% if sel_sort=='price_asc' %}selected{% endif %}>Price: low to high</option>
+        <option value="price_desc" {% if sel_sort=='price_desc' %}selected{% endif %}>Price: high to low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- filters -->
+  <form method="get" action="{{ url_for('browse') }}" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px">
+    {% if search %}<input type="hidden" name="q" value="{{ search }}">{% endif %}
+    <select name="cat" style="padding:10px 12px;background:var(--card);border:1px solid var(--line2);border-radius:10px;color:#fff;font-size:13px">
+      <option value="">All categories</option>
+      {% for c in cats %}<option value="{{ c.id }}" {% if sel_cat==c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+    </select>
+    <select name="cond" style="padding:10px 12px;background:var(--card);border:1px solid var(--line2);border-radius:10px;color:#fff;font-size:13px">
+      <option value="">Any condition</option>
+      <option value="New"  {% if sel_cond=='New' %}selected{% endif %}>New</option>
+      <option value="Used" {% if sel_cond=='Used' %}selected{% endif %}>Used</option>
+    </select>
+    <input type="number" name="min" placeholder="Min ₦" value="{{ sel_min or '' }}" style="width:110px;padding:10px 12px;background:var(--card);border:1px solid var(--line2);border-radius:10px;color:#fff">
+    <input type="number" name="max" placeholder="Max ₦" value="{{ sel_max or '' }}" style="width:110px;padding:10px 12px;background:var(--card);border:1px solid var(--line2);border-radius:10px;color:#fff">
+    <button class="btn btn-primary btn-sm" type="submit">Apply</button>
+    <a href="{{ url_for('browse') }}" class="btn btn-ghost btn-sm">Clear</a>
+  </form>
+
+  {% if products %}
+  <div class="prod-grid">
+    {% for p in products %}
+    <div class="prod-card">
+      <a href="{{ url_for('product_page', pid=p.id) }}" class="ph">
+        <img src="{{ url_for('uploads', fn=p.main_img) if p.main_img else url_for('static', filename='cat/other.png') }}"
+             alt="{{ p.name }}" loading="lazy">
+        {% if p.condition == 'Used' %}<span class="cond used">USED</span>{% endif %}
+      </a>
+      <div class="bd">
+        <div class="nm">{{ p.name }}</div>
+        {% if p.brand %}<div class="brand">{{ p.brand }}{% if p.model %} · {{ p.model }}{% endif %}</div>{% endif %}
+        <div class="price">{{ p.price|money }}</div>
+        <div class="shop">🏪 {{ p.shop_name }} · {{ p.shop_location }}</div>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('product_page', pid=p.id) }}">View Details</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <strong>No matching products{% if search %} for "{{ search }}"{% endif %}.</strong>
+    Try widening your filters or search a different term.
+    {% if search or sel_cat or sel_cond %}<br><a href="{{ url_for('browse') }}" class="muted">Clear all filters →</a>{% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+function applySort(v){
+  const u=new URLSearchParams(location.search); u.set('sort',v); location.search=u.toString();
+}
+</script>
+{% endblock %}

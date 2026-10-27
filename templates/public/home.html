@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}KanoGadgets.com — Find Your Next Gadget in Kano{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="badge badge-published" style="letter-spacing:.16em;font-size:10px;margin-bottom:14px">LATEST GADGETS · KANO, NIGERIA</div>
+    <h1>Find Your<br><span>Next Gadget</span></h1>
+    <p class="sub">Discover smartphones, laptops, accessories and more from sellers in Kano's gadget marketplace.</p>
+    <form class="searchbar" action="{{ url_for('browse') }}" method="get">
+      <input name="q" placeholder="Search gadgets, brands, or categories…">
+      <button type="submit">⌕</button>
+    </form>
+    <a href="{{ url_for('browse') }}" class="btn btn-primary" style="margin-top:20px">Explore Gadgets</a>
+    <div class="trust">
+      <div class="t"><i>🤝</i><strong>Trusted Sellers</strong><span>Verified Kano shops</span></div>
+      <div class="t"><i>📱</i><strong>Wide Selection</strong><span>Latest &amp; popular gadgets</span></div>
+      <div class="t"><i>💬</i><strong>WhatsApp Contact</strong><span>Chat with sellers directly</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Shop by Category</h2>
+      <a href="{{ url_for('categories_page') }}">View all categories →</a>
+    </div>
+    {% if cats %}
+    <div class="cat-grid">
+      {% for c in cats %}
+      <a class="cat-card" href="{{ url_for('category_page', slug=c.slug) }}">
+        <div class="ph"><img src="{{ url_for('static', filename=c.image) if c.image else url_for('static', filename='cat/other.png') }}" alt="{{ c.name }}" loading="lazy"></div>
+        <div class="nm">{{ c.name }}</div>
+        <small>Browse the collection</small>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+      <div class="empty"><strong>We're warming up.</strong> Categories are being prepared for the marketplace.</div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Featured Products</h2>
+      <a href="{{ url_for('browse') }}">View all →</a>
+    </div>
+    {% if featured %}
+    <div class="prod-grid">
+      {% for p in featured %}
+      <div class="prod-card">
+        <a href="{{ url_for('product_page', pid=p.id) }}" class="ph">
+          <img src="{{ url_for('uploads', fn=p.main_img) if p.main_img else url_for('static', filename='cat/other.png') }}"
+               alt="{{ p.name }}" loading="lazy">
+          {% if p.condition == 'Used' %}<span class="cond used">USED</span>{% endif %}
+        </a>
+        <div class="bd">
+          <div class="nm">{{ p.name }}</div>
+          {% if p.brand %}<div class="brand">{{ p.brand }}{% if p.model %} · {{ p.model }}{% endif %}</div>{% endif %}
+          <div class="price">{{ p.price|money }}</div>
+          <div class="shop">🏪 {{ p.shop_name }} · {{ p.shop_location }}</div>
+          <a class="btn btn-primary btn-sm" href="{{ url_for('product_page', pid=p.id) }}">View Details</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+      <div class="empty">
+        <strong>No gadgets listed yet.</strong>
+        Check back soon — Kano's gadget sellers are setting up shop.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap" style="text-align:center;background:var(--card);border-radius:var(--r);border:1px solid var(--line);padding:40px 24px">
+    <h2 style="font:800 22px var(--font-h);color:#fff;margin-bottom:10px">Work in Kano's Gadget Center?</h2>
+    <p class="muted" style="max-width:420px;margin:0 auto 20px">Open your own seller page, publish products with your own WhatsApp contact, and reach customers.</p>
+    <a href="{{ url_for('become_seller') }}" class="btn btn-primary">Become a Seller</a>
+  </div>
+</section>
+{% endblock %}

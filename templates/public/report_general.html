@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Report a Problem — KanoGadgets.com{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:44px">
+  <div class="form-card">
+    <h2 style="margin:0;font:800 22px var(--font-h);color:#fff">Report a Problem</h2>
+    <p class="muted" style="margin-bottom:20px">Something not working right? Let us know and we'll look into it.</p>
+    <form method="post">
+      <div class="field"><label>What is this about? *</label>
+        <select name="reason" required>
+          <option value="">Choose…</option>
+          <option>Broken page or feature</option>
+          <option>Suspicious seller or listing</option>
+          <option>Account or login problem</option>
+          <option>Safety or harassment concern</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="field"><label>What happened? *</label>
+        <textarea name="details" rows="4" required placeholder="Describe the issue you saw…"></textarea>
+      </div>
+      <div class="field"><label>Your email (optional)</label>
+        <input type="email" name="contact" placeholder="hello@…com (optional)"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Send Report</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

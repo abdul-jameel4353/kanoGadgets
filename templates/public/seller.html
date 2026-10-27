@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ sp.shop_name }} — KanoGadgets.com{% endblock %}
+{% block content %}
+<section class="section">
+  <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:18px;margin-bottom:24px">
+    <div>
+      <div class="badge badge-published" style="margin-bottom:8px">VERIFIED SELLER</div>
+      <h2 style="margin:0;font:800 26px var(--font-h);color:#fff">{{ sp.shop_name }}</h2>
+      <p class="muted" style="margin-top:4px">📍 {{ sp.location }} · {{ products|length }} active listing{{ 's' if products|length != 1 }}</p>
+    </div>
+    {% if wa_link %}
+    <a href="{{ wa_link }}" target="_blank" rel="noopener" class="btn btn-wa" style="font-size:14px;padding:12px 20px">💬 Chat with {{ sp.shop_name }}</a>
+    {% endif %}
+  </div>
+  {% if sp.shop_description %}
+  <div class="form-card" style="max-width:none;margin-bottom:26px"><p style="white-space:pre-wrap;color:#9FB2CF;margin:0">{{ sp.shop_description }}</p></div>
+  {% endif %}
+
+  <div class="section-head"><h2>{{ products|length }} Active Listing{{ 's' if products|length != 1 }}</h2></div>
+  {% if products %}
+  <div class="prod-grid">
+    {% for p in products %}
+    <div class="prod-card">
+      <a href="{{ url_for('product_page', pid=p.id) }}" class="ph">
+        <img src="{{ url_for('uploads', fn=p.main_img) if p.main_img else url_for('static', filename='cat/other.png') }}" alt="{{ p.name }}">
+        {% if p.condition == 'Used' %}<span class="cond used">USED</span>{% endif %}
+      </a>
+      <div class="bd">
+        <div class="nm">{{ p.name }}</div>
+        <div class="price">{{ p.price|money }}</div>
+        <div class="shop">📍 {{ p.location or sp.location }}</div>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('product_page', pid=p.id) }}">View Details</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty"><strong>No active listings.</strong> This seller is getting ready — check back soon.</div>
+  {% endif %}
+</section>
+{% endblock %}

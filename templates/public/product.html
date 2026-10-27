@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}{{ p.name }} — ₦{{ '{:,}'.format(p.price) if p.price else '' }} — KanoGadgets.com{% endblock %}
+{% block content %}
+<section class="section">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px" class="two-col">
+    <!-- gallery -->
+    <div>
+      <div style="border-radius:var(--r);overflow:hidden;background:#0B1220;box-shadow:0 18px 50px -20px rgba(0,0,0,.8)">
+        <img id="mainImg" src="{{ url_for('uploads', fn=imgs[0].file) if imgs else url_for('static', filename='cat/other.png') }}"
+             alt="{{ p.name }}" style="width:100%;height:auto;display:block">
+      </div>
+      {% if imgs|length > 1 %}
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        {% for im in imgs %}
+        <button type="button" style="width:64px;height:64px;border:2px solid {% if loop.first %}var(--blue){% else %}transparent{% endif %};
+                border-radius:9px;padding:0;background:none;cursor:pointer;overflow:hidden"
+                onclick="document.getElementById('mainImg').src=this.dataset.full">
+          <img src="{{ url_for('uploads', fn=im.file) }}" style="width:100%;height:100%;object-fit:cover" alt="thumb {{ loop.index }}">
+        </button>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- info -->
+    <div>
+      {% if p.brand %}<div class="brand" style="color:var(--blue);font-weight:600">{{ p.brand }}{% if p.model %} · {{ p.model }}{% endif %}</div>{% endif %}
+      <h1 style="font:800 28px/1.2 var(--font-h);color:#fff;margin:4px 0 8px">{{ p.name }}</h1>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
+        <span class="badge {{ 'published' if p.availability=='In stock' else 'pending' }}">{{ p.availability }}</span>
+        <span class="badge {{ 'published' if p.condition=='New' else 'pending' }}">{{ p.condition }}</span>
+      </div>
+      <div class="price" style="font:900 34px var(--font-h);color:var(--blue);margin-bottom:16px">{{ p.price|money }}</div>
+
+      <p style="color:#9FB2CF;white-space:pre-wrap">{{ p.description or 'No description provided.' }}</p>
+
+      <div style="display:flex;gap:10px;margin:24px 0;flex-wrap:wrap">
+        {% if wa_link %}
+        <a href="{{ wa_link }}" target="_blank" rel="noopener" class="btn btn-wa" style="font-size:14.5px;padding:13px 22px">
+          💬 Chat with Seller on WhatsApp
+        </a>
+        {% else %}
+        <div class="muted">Seller's WhatsApp unavailable</div>
+        {% endif %}
+        <a href="{{ url_for('report_product', pid=p.id) }}" class="btn btn-ghost" style="font-size:13.5px">⚑ Report</a>
+      </div>
+
+      <!-- seller card -->
+      <a href="{{ url_for('public_seller', sid=seller.id) }}" style="display:block;background:var(--card);border:1px solid var(--line);
+          border-radius:12px;padding:16px;display:flex;gap:14px;align-items:center;text-decoration:none;margin-top:12px">
+        <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));
+             display:grid;place-items:center;color:#fff;font:800 16px var(--font-h)">{{ seller.shop_name[:2]|upper }}</div>
+        <div>
+          <strong style="color:#fff;font:700 14px var(--font-h)">{{ seller.shop_name }}</strong><br>
+          <span class="muted" style="font-size:12.5px">📍 {{ p.location or seller.location }} • Verified Seller</span>
+        </div>
+        <span style="margin-left:auto;color:var(--blue);font-size:13px">View shop →</span>
+      </a>
+      <p class="muted" style="font-size:12px;margin-top:10px">
+        This listing was published by the seller. KanoGadgets.com is a discovery and contact platform —
+        we don't process payments or delivery.
+      </p>
+    </div>
+  </div>
+
+  {% if related %}
+  <div class="section" style="padding-top:44px">
+    <div class="section-head"><h2>You might also like</h2></div>
+    <div class="prod-grid" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">
+      {% for r in related %}
+      <div class="prod-card" style="font-size:0.92em">
+        <a href="{{ url_for('product_page', pid=r.id) }}" class="ph">
+          <img src="{{ url_for('uploads', fn=r.main_img) if r.main_img else url_for('static', filename='cat/other.png') }}" alt="{{ r.name }}">
+          {% if r.condition == 'Used' %}<span class="cond used">USED</span>{% endif %}
+        </a>
+        <div class="bd">
+          <div class="nm">{{ r.name }}</div>
+          <div class="price">{{ r.price|money }}</div>
+          <div class="shop">🏪 {{ r.shop_name }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
