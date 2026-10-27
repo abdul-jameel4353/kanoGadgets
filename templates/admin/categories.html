@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}Categories — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header" style="margin-bottom:20px"><h1>Categories</h1></div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px" class="two-col">
+  <div class="table-card">
+    <table class="tbl">
+      <thead><tr><th>Icon</th><th>Name</th><th>Listings</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for c in cats %}
+        <tr>
+          <td style="font-size:22px">{{ c.icon or '📦' }}</td>
+          <td><strong style="color:#fff">{{ c.name }}</strong></td>
+          <td class="muted" style="font-size:13px">{{ c.listings }}</td>
+          <td><span class="badge {{ 'published' if c.active else 'draft' }}">{{ 'active' if c.active else 'inactive' }}</span></td>
+          <td>
+            <form method="post" action="{{ url_for('admin_category_toggle', cid=c.id) }}" style="display:inline">
+              <button class="btn btn-ghost btn-sm">{{ 'Deactivate' if c.active else 'Activate' }}</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="form-card" style="position:sticky;top:88px">
+    <h3 class="h3" style="margin-top:0">Add new category</h3>
+    <form method="post">
+      <div class="field"><label>Name *</label><input name="name" required></div>
+      <div class="field"><label>Icon</label><input name="icon" placeholder="📦" maxlength="4"></div>
+      <div class="field"><label>Description</label><input name="description" placeholder="Short description"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Create Category</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

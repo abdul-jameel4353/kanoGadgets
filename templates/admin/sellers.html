@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% block title %}Sellers — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header"><h1>Sellers</h1><p class="muted">Manage authorized sellers and their status.</p></div>
+<div class="table-card">
+  <table class="tbl">
+    <thead><tr><th>Shop</th><th>Contact</th><th>Location</th><th>Listings</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for s in sellers %}
+      <tr>
+        <td><strong style="color:#fff">{{ s.shop_name }}</strong><br><span class="muted" style="font-size:12px">{{ s.display_name }}</span></td>
+        <td class="muted" style="font-size:12.5px">{{ s.email }}<br>{{ s.whatsapp }}</td>
+        <td class="muted" style="font-size:12.5px">{{ s.location }}</td>
+        <td><span class="badge {{ 'published' if s.listings else 'pending' }}">{{ s.listings }}</span></td>
+        <td><span class="badge {{ s.acc_status }}">{{ s.acc_status }}</span></td>
+        <td class="tbl-actions">
+          <form method="post" action="{{ url_for('admin_seller_toggle', uid=s.user_id) }}" style="display:inline">
+            <button class="btn btn-sm {{ 'btn-wa' if s.acc_status=='suspended' else 'btn-danger' }}">
+              {{ 'Reinstate' if s.acc_status=='suspended' else 'Suspend' }}
+            </button>
+          </form>
+          <span class="muted" style="font-size:11.5px">Moderation is recorded</span>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="text-align:center;color:#8FA0BB;padding:36px">No approved sellers yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

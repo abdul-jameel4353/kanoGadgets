@@ -1,0 +1,67 @@
+{% extends "admin/base.html" %}
+{% block title %}Products — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header">
+  <div><h1>Products</h1><p class="muted">Moderate listings. Approved sellers publish instantly — review after the fact.</p></div>
+</div>
+
+<form method="get" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+  <select name="cat" style="padding:10px;background:var(--card);border:1px solid var(--line2);border-radius:9px;color:#fff;font-size:13px">
+    <option value="">All categories</option>
+    {% for c in cats %}<option value="{{ c.id }}" {% if sel_cat==c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+  </select>
+  <select name="status" style="padding:10px;background:var(--card);border:1px solid var(--line2);border-radius:9px;color:#fff;font-size:13px">
+    <option value="">Any status</option>
+    <option {% if sel_status=='published' %}selected{% endif %} value="published">Published</option>
+    <option {% if sel_status=='draft' %}selected{% endif %} value="draft">Draft</option>
+    <option {% if sel_status=='removed' %}selected{% endif %} value="removed">Removed</option>
+    <option {% if sel_status=='suspended' %}selected{% endif %} value="suspended">Suspended</option>
+  </select>
+  <input name="seller" placeholder="Search seller…" value="{{ sel_seller }}" style="padding:10px;background:var(--card);border:1px solid var(--line2);border-radius:9px;color:#fff;font-size:13px">
+  <button class="btn btn-primary btn-sm">Filter</button>
+  <a href="{{ url_for('admin_products') }}" class="btn btn-ghost btn-sm">Clear</a>
+</form>
+
+<div class="table-card">
+  <table class="tbl">
+    <thead><tr><th></th><th>Product</th><th>Price</th><th>Seller</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td style="width:52px"><img src="{{ url_for('uploads', fn=p.main_img) if p.main_img else '' }}" style="width:44px;height:44px;border-radius:7px;object-fit:cover;background:#0B1220"></td>
+        <td>
+          <strong style="color:#fff;font-size:14px">{{ p.name }}</strong><br>
+          <span class="muted" style="font-size:12px">{{ p.brand or '' }}</span>
+        </td>
+        <td style="font:700 15px var(--font-h);color:var(--blue)">{{ p.price|money }}</td>
+        <td class="muted" style="font-size:12.5px">{{ p.shop_name }}</td>
+        <td class="muted" style="font-size:12.5px">{{ p.cat_name or '—' }}</td>
+        <td><span class="badge {{ p.status }}">{{ p.status }}</span></td>
+        <td class="tbl-actions" nowrap>
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('product_page', pid=p.id) }}" target="_blank">↗</a>
+          {% if p.status=='published' %}
+          <form method="post" action="{{ url_for('admin_moderate_product', pid=p.id) }}" style="display:inline">
+            <input type="hidden" name="action" value="suspend">
+            <button class="btn btn-ghost btn-sm">Suspend</button>
+          </form>
+          <form method="post" action="{{ url_for('admin_moderate_product', pid=p.id) }}" style="display:inline"
+                onsubmit="return confirm('Remove this listing from the marketplace? (Can be restored.)')">
+            <input type="hidden" name="action" value="remove">
+            <button class="btn btn-danger btn-sm">Remove</button>
+          </form>
+          {% elif p.status in ['removed','suspended'] %}
+          <form method="post" action="{{ url_for('admin_moderate_product', pid=p.id) }}" style="display:inline"
+                onsubmit="return confirm('Restore this listing?')">
+            <input type="hidden" name="action" value="restore">
+            <button class="btn btn-wa btn-sm">Restore</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center;color:#8FA0BB;padding:36px">No products found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

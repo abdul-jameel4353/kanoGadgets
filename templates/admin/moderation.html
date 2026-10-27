@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Moderation Log — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header"><h1>Moderation Log</h1><p class="muted">Every administrative action is recorded here.</p></div>
+<div class="table-card">
+  <table class="tbl">
+    <thead><tr><th>When</th><th>Actor</th><th>Target</th><th>Action</th><th>Reason</th></tr></thead>
+    <tbody>
+      {% for m in rows %}
+      <tr>
+        <td class="muted" style="font-size:12px">{{ m.created_at[:16] }}</td>
+        <td style="color:#fff;font-size:13px">{{ m.actor_name or m.actor_id or 'system' }}</td>
+        <td><span class="muted" style="font-size:12.5px">{{ m.target_type }} #{{ m.target_id }}</span></td>
+        <td style="color:var(--blue);font-size:13px">{{ m.action }}</td>
+        <td class="muted" style="font-size:12.5px;">{{ m.reason or '—' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="text-align:center;color:#8FA0BB;padding:36px">No moderation activity yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+{% block title %}Application #{{ a.id }} — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header" style="margin-bottom:24px">
+  <div style="display:flex;gap:14px;align-items:center">
+    <a href="{{ url_for('admin_applications') }}" class="btn btn-ghost btn-sm">← All applications</a>
+    <h1 style="margin:0">Application #{{ a.id }}</h1>
+    <span class="badge {{ a.status }}">{{ a.status.replace('_',' ') }}</span>
+  </div>
+</div>
+
+{% if a.status in ('pending','under_review') %}
+<form method="post" action="{{ url_for('admin_application_decide', aid=a.id) }}" style="margin-bottom:22px">
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-primary" name="action" value="approve">✔ Approve &amp; Grant Seller Access</button>
+    <button class="btn btn-ghost"  name="action" value="under_review">Place Under Review</button>
+    <button class="btn btn-danger" name="action" value="reject" style="margin-left:auto">✖ Reject Application</button>
+  </div>
+  <div class="field" style="margin-top:12px">
+    <input name="reason" placeholder="Reason shown to the applicant (optional)">
+  </div>
+</form>
+{% else %}
+<div class="flash ok" style="position:static;transform:none;margin-bottom:22px">
+  <strong>{{ a.status.replace('_','-').title() }}</strong> on {{ a.decided_at[:10] if a.decided_at else '—' }}
+  {% if a.rejection_reason %}<br>Reason: {{ a.rejection_reason }}{% endif %}
+  {% if invite %}<br><strong>Onboarding link (send to applicant):</strong>
+    <code style="color:#8BB8FF;font-size:12px">{{ invite }}</code>{% endif %}
+</div>
+{% endif %}
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="two-col">
+  <div class="form-card" style="max-width:none">
+    <h3 class="h3" style="margin-top:0">Applicant</h3>
+    <div style="color:#9FB2CF;line-height:1.8">
+      <div style="margin-bottom:6px"><strong style="color:#fff">Name:</strong> {{ a.full_name }}</div>
+      <div style="margin-bottom:6px"><strong style="color:#fff">Email:</strong> {{ a.user_email }}</div>
+      <div style="margin-bottom:6px"><strong style="color:#fff">Phone:</strong> {{ a.phone }}</div>
+      <div style="margin-bottom:6px"><strong style="color:#fff">Rules accepted:</strong> ✔ Yes</div>
+      <div style="margin-bottom:6px"><strong style="color:#fff">Applied:</strong> {{ a.created_at[:10] }}</div>
+    </div>
+    <h3 class="h3" style="margin:18px 0 4px;font-size:14px">Reason for joining</h3>
+    <div style="background:#090E18;padding:12px;border-radius:8px;color:#9FB2CF;font-size:13.5px">{{ a.reason }}</div>
+  </div>
+
+  <div>
+    <h3 class="h3" style="font-size:14px;margin-top:0">Passport photo</h3>
+    <div class="pp-box">
+      <img src="{{ url_for('private_passport', aid=a.id) }}" alt="Applicant passport photo">
+      <p class="muted" style="font-size:11.5px;text-align:center;margin-bottom:0">Visible only to authorised reviewers. Never in public listings or photos.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

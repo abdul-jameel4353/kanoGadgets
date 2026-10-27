@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% block title %}Seller Applications — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header" style="margin-bottom:20px">
+  <div><h1>Seller Applications</h1><p class="muted">Review, approve, or reject people who want to sell.</p></div>
+</div>
+
+<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+  <a href="{{ url_for('admin_applications') }}" class="btn btn-sm {% if not active %}btn-primary{% else %}btn-ghost{% endif %}">All</a>
+  <a href="{{ url_for('admin_applications', status='pending') }}" class="btn btn-sm {% if active=='pending' %}btn-primary{% else %}btn-ghost{% endif %}">Pending</a>
+  <a href="{{ url_for('admin_applications', status='under_review') }}" class="btn btn-sm {% if active=='under_review' %}btn-primary{% else %}btn-ghost{% endif %}">Under Review</a>
+  <a href="{{ url_for('admin_applications', status='approved') }}" class="btn btn-sm {% if active=='approved' %}btn-primary{% else %}btn-ghost{% endif %}">Approved</a>
+  <a href="{{ url_for('admin_applications', status='rejected') }}" class="btn btn-sm {% if active=='rejected' %}btn-primary{% else %}btn-ghost{% endif %}">Rejected</a>
+</div>
+
+<div class="table-card">
+  <table class="tbl">
+    <thead><tr><th>Name</th><th>Shop</th><th>Location</th><th>Contact</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for a in apps %}
+      <tr>
+        <td><strong style="color:#fff">{{ a.full_name }}</strong></td>
+        <td><span class="muted">{{ a.shop_name }}</span></td>
+        <td class="muted" style="font-size:12.5px">{{ a.shop_location }}</td>
+        <td class="muted" style="font-size:12.5px">{{ a.email }}<br>{{ a.phone }}</td>
+        <td><span class="badge {{ a.status }}">{{ a.status.replace('_',' ') }}</span></td>
+        <td><a class="btn btn-primary btn-sm" href="{{ url_for('admin_application_detail', aid=a.id) }}">Review</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="text-align:center;color:#8FA0BB;padding:36px">No applications{% if active %} with status "{{ active }}"{% endif %}.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
