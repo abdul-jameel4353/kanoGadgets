@@ -1,0 +1,42 @@
+{% extends "seller/base.html" %}
+{% block title %}My Products — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header">
+  <div><h1>My Products</h1><p class="muted" style="font-size:13.5px">{{ products|length }} listing{{ 's' if products|length != 1 }}</p></div>
+  <a href="{{ url_for('seller_add_product') }}" class="btn btn-primary">＋ Add New Product</a>
+</div>
+
+{% if products %}
+<div class="table-card">
+  <table class="tbl">
+    <thead><tr><th></th><th>Product</th><th>Price</th><th>Status</th><th>Published</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td style="width:54px"><img src="{{ url_for('uploads', fn=p.main_img) if p.main_img else '' }}" alt="" style="width:46px;height:46px;border-radius:8px;object-fit:cover;background:#0B1220"></td>
+        <td>
+          <strong>{{ p.name }}</strong><br>
+          <span class="muted" style="font-size:12px">{{ p.brand or '' }}{% if p.model %} · {{ p.model }}{% endif %}</span>
+        </td>
+        <td><span style="font:700 15px var(--font-h);color:var(--blue)">{{ p.price|money }}</span></td>
+        <td><span class="badge {{ p.status }}">{{ p.status }}</span></td>
+        <td class="muted" style="font-size:12.5px">{{ p.created_at[:10] }}</td>
+        <td class="tbl-actions" nowrap>
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('product_page', pid=p.id) }}" target="_blank">View</a>
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('seller_edit_product', pid=p.id) }}">Edit</a>
+          <form method="post" action="{{ url_for('seller_delete_product', pid=p.id) }}" style="display:inline">
+            <button class="btn btn-danger btn-sm" onclick="return confirm('Delete \'{{ p.name }}\'? This cannot be undone.')">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty">
+  <strong>No products published yet.</strong>
+  Create your first listing and it will appear in KanoGadgets.com immediately after approval.
+</div>
+{% endif %}
+{% endblock %}

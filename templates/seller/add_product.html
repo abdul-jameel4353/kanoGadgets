@@ -1,0 +1,75 @@
+{% extends "seller/base.html" %}
+{% block title %}Add Product — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header" style="margin-bottom:24px"><h1>Add New Product</h1></div>
+
+<div class="form-card" style="max-width:640px">
+  {% if errs %}<div class="flash err" style="position:static;transform:none;margin-bottom:18px">{{ errs|first }}</div>{% endif %}
+  <form method="post" enctype="multipart/form-data">
+    <h3 class="h3" style="font:700 15px var(--font-h);color:#fff;margin:0 0 16px">Product information</h3>
+    <div class="field"><label>Product name *</label><input name="name" value="{{ form.name or '' }}" placeholder="iPhone 15 Pro Max 256GB" required></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="field"><label>Brand</label><input name="brand" value="{{ form.brand or '' }}" placeholder="Apple"></div>
+      <div class="field"><label>Model</label><input name="model" value="{{ form.model or '' }}" placeholder="15 Pro Max"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="field"><label>Category *</label>
+        <select name="category_id" required>
+          <option value="">Choose…</option>
+          {% for c in cats %}<option value="{{ c.id }}" {% if form.category_id==c.id|string %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field"><label>Condition *</label>
+        <select name="condition" required>
+          <option>New</option><option {% if form.condition=='Used' %}selected{% endif %}>Used</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Price (₦) *</label><input name="price" type="number" min="1" value="{{ form.price or '' }}" placeholder="1250000" required></div>
+    <div class="field"><label>Availability</label>
+      <select name="availability">
+        <option>In stock</option><option>Limited</option><option>Out of stock</option>
+      </select>
+    </div>
+
+    <h3 class="h3" style="font:700 15px var(--font-h);color:#fff;margin:24px 0 14px;padding-top:14px;border-top:1px solid var(--line)">Contact &amp; location</h3>
+    <div class="field"><label>WhatsApp number *</label>
+      <input name="whatsapp" value="{{ form.whatsapp or sp.whatsapp or '' }}" placeholder="08031234567" required>
+      <small>Customers will message you on this number — double-check it.</small>
+    </div>
+    <div class="field"><label>Your location *</label><input name="location" value="{{ form.location or sp.location }}" required></div>
+    <div class="field"><label>Availability note</label><input name="availability_note" value="{{ form.availability_note or '' }}" placeholder="e.g. Ready for pickup today"></div>
+
+    <h3 class="h3" style="font:700 15px var(--font-h);color:#fff;margin:24px 0 14px;padding-top:14px;border-top:1px solid var(--line)">Product description</h3>
+    <div class="field"><label>Description *</label>
+      <textarea name="description" rows="5" required placeholder="Features, spec, what's included, any known defects…">{{ form.description or '' }}</textarea>
+    </div>
+
+    <h3 class="h3" style="font:700 15px var(--font-h);color:#fff;margin:24px 0 14px;padding-top:14px;border-top:1px solid var(--line)">Product photos</h3>
+    <div class="field"><label>Images * (at least one, up to 8)</label>
+      <label class="up-panel"><input type="file" name="images" accept=".jpg,.jpeg,.png,.webp" multiple hidden onchange="pvList(this)">
+        🖼️ Select or drop photos
+        <small>First one is the main image. jpg/png/webp, up to 8 MB each.</small>
+      </label>
+      <div id="pvList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:10px"></div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:28px;padding-top:20px;border-top:1px solid var(--line)">
+      <a href="{{ url_for('seller_products') }}" class="btn btn-ghost">Cancel</a>
+      <button class="btn btn-primary" style="flex:1;justify-content:center;padding:13px">Publish Product</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function pvList(inp){
+  const box=document.getElementById('pvList'); box.innerHTML='';
+  for(const f of inp.files){
+    const div=document.createElement('div'); div.style.cssText='position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--line2)';
+    const img=document.createElement('img'); img.src=URL.createObjectURL(f); img.style.cssText='width:100%;height:70px;object-fit:cover;display:block';
+    div.appendChild(img); box.appendChild(div);
+  }
+}
+</script>
+{% endblock %}

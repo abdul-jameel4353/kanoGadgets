@@ -1,0 +1,20 @@
+{% extends "seller/base.html" %}
+{% block title %}Shop Profile — KanoGadgets.com{% endblock %}
+{% block content %}
+<div class="dash-header" style="margin-bottom:24px"><h1>Profile &amp; Shop Settings</h1></div>
+
+<div class="form-card" style="max-width:560px">
+  <form method="post">
+    <div class="field"><label>Your display name *</label><input name="display_name" value="{{ sp.display_name }}" required></div>
+    <div class="field"><label>Shop name *</label><input name="shop_name" value="{{ sp.shop_name }}" required></div>
+    <div class="field"><label>Shop location *</label><input name="location" value="{{ sp.location }}" required></div>
+    <div class="field"><label>WhatsApp number *</label><input name="whatsapp" value="{{ sp.whatsapp }}" required>
+      <small>Customers will chat with you on this number.</small></div>
+    <div class="field"><label>Contact email</label><input name="contact_email" type="email" value="{{ sp.contact_email or '' }}"></div>
+    <div class="field"><label>Shop description</label>
+      <textarea name="shop_description" rows="4" placeholder="Tell customers about your shop, specials and service.">{{ sp.shop_description or '' }}</textarea>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center">Save Shop Profile</button>
+  </form>
+</div>
+{% endblock %}
