@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Report a Problem — KanoGadgets.com{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:44px">
+  <div class="form-card">
+    <h2 style="margin:0;font:800 22px var(--font-h);color:#fff">Report this listing</h2>
+    <p class="muted" style="margin-bottom:20px">Help keep KanoGadgets.com safe. Reports are reviewed by our admin team and aren't shown publicly.</p>
+    <div style="background:#090E18;border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:18px">
+      <strong style="color:#fff">Product:</strong> {{ p.name }}
+    </div>
+    <form method="post">
+      <div class="field"><label>Reason *</label>
+        <select name="reason" required>
+          <option value="">Choose…</option>
+          <option>Suspected scam</option>
+          <option>Counterfeit or fake product</option>
+          <option>Stolen product</option>
+          <option>Misleading description</option>
+          <option>Prohibited item</option>
+          <option>Suspicious seller</option>
+          <option>Inappropriate content</option>
+          <option>Other concern</option>
+        </select>
+      </div>
+      <div class="field"><label>Details (optional)</label>
+        <textarea name="details" rows="4" placeholder="Tell us what looks wrong…"></textarea>
+      </div>
+      <div class="field"><label>Your email (optional)</label>
+        <input type="email" name="contact" placeholder="So we can follow up — optional">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Submit Report</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
