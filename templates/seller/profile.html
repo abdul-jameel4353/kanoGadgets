@@ -1,20 +1,69 @@
 {% extends "seller/base.html" %}
-{% block title %}Shop Profile — KanoGadgets.com{% endblock %}
+{% block title %}Profile &amp; Account — KanoPlug.com{% endblock %}
 {% block content %}
-<div class="dash-header" style="margin-bottom:24px"><h1>Profile &amp; Shop Settings</h1></div>
+<div class="dash-header" style="margin-bottom:24px"><h1>Profile &amp; Account</h1></div>
 
-<div class="form-card" style="max-width:560px">
-  <form method="post">
-    <div class="field"><label>Your display name *</label><input name="display_name" value="{{ sp.display_name }}" required></div>
-    <div class="field"><label>Shop name *</label><input name="shop_name" value="{{ sp.shop_name }}" required></div>
-    <div class="field"><label>Shop location *</label><input name="location" value="{{ sp.location }}" required></div>
-    <div class="field"><label>WhatsApp number *</label><input name="whatsapp" value="{{ sp.whatsapp }}" required>
-      <small>Customers will chat with you on this number.</small></div>
-    <div class="field"><label>Contact email</label><input name="contact_email" type="email" value="{{ sp.contact_email or '' }}"></div>
-    <div class="field"><label>Shop description</label>
-      <textarea name="shop_description" rows="4" placeholder="Tell customers about your shop, specials and service.">{{ sp.shop_description or '' }}</textarea>
-    </div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center">Save Shop Profile</button>
-  </form>
+{% if request.args.get('complete') %}
+<div class="flash" style="position:static;transform:none;border-left-color:var(--amber,#FFB020);margin-bottom:18px">Finish your shop details below so customers can reach you.</div>
+{% endif %}
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:1000px">
+
+  <!-- ═══ Account: photo / username / email / phone ═══ -->
+  <div class="form-card" style="margin:0">
+    <h3>👤 Account &amp; Public Identity</h3>
+    <form method="post" enctype="multipart/form-data">
+      <input type="hidden" name="sect" value="account">
+      <div class="field" style="display:flex;align-items:center;gap:16px">
+        {% if sp.avatar %}
+        <img src="{{ url_for('uploads', fn=sp.avatar) }}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,175,55,.5)">
+        {% else %}
+        <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#F0C75E);display:grid;place-items:center;color:#0A0A0B;font:800 22px var(--font-h)">{{ (user.username or user.name)[:1]|upper }}</div>
+        {% endif %}
+        <div>
+          <label style="margin-bottom:4px">Profile photo (optional)</label>
+          <input type="file" name="avatar" accept=".jpg,.jpeg,.png,.webp" style="border:none;padding:0;font-size:12.5px;color:#8CA0BC">
+          <small>jpg/png/webp, ≤8 MB — shown on your shop &amp; listings.</small>
+        </div>
+      </div>
+      <div class="field"><label>Username (public) *</label><input name="username" value="{{ user.username or '' }}" required>
+        <small>Buyers see this everywhere as your shop identity.</small></div>
+      <div class="field"><label>Email address *</label><input name="email" type="email" value="{{ user.email }}" required></div>
+      <div class="field"><label>Phone number (WhatsApp)</label><input name="phone" value="{{ user.phone or '' }}" placeholder="08031234567"></div>
+      <div class="field"><label>Contact email shown publicly</label><input name="contact_email_acct" type="email" value="{{ sp.contact_email or '' }}"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Save Account</button>
+    </form>
+  </div>
+
+  <!-- ═══ Shop details ═══ -->
+  <div class="form-card" style="margin:0">
+    <h3>🏪 Shop Info</h3>
+    <form method="post">
+      <input type="hidden" name="sect" value="shop">
+      <div class="field"><label>Display name *</label><input name="display_name" value="{{ sp.display_name }}" required></div>
+      <div class="field"><label>Shop name *</label><input name="shop_name" value="{{ sp.shop_name }}" required></div>
+      <div class="field"><label>Shop location *</label><input name="location" value="{{ sp.location }}" required></div>
+      <div class="field"><label>WhatsApp number *</label><input name="whatsapp" value="{{ sp.whatsapp }}" required>
+        <small>Customers chat you on this number.</small></div>
+      <div class="field"><label>Contact email</label><input name="contact_email" type="email" value="{{ sp.contact_email or '' }}"></div>
+      <div class="field"><label>Shop description</label>
+        <textarea name="shop_description" rows="3" placeholder="Tell customers about your shop, specials and service.">{{ sp.shop_description or '' }}</textarea>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Save Shop Profile</button>
+    </form>
+  </div>
+
+  <!-- ═══ Security: password ═══ -->
+  <div class="form-card" style="margin:0">
+    <h3>🔒 Security</h3>
+    <form method="post">
+      <input type="hidden" name="sect" value="security">
+      <div class="field"><label>Current password</label><input name="current_password" type="password" required autocomplete="current-password"></div>
+      <div class="field"><label>New password (min 10 chars)</label><input name="new_password" type="password" required autocomplete="new-password"></div>
+      <div class="field"><label>Confirm new password</label><input name="confirm_password" type="password" required autocomplete="new-password"></div>
+      <button class="btn" style="width:100%;justify-content:center">Change Password</button>
+    </form>
+    <p class="muted" style="font-size:11.5px;margin-top:14px">Passwords are stored as secure hashes — we can never see them. Change it if you suspect anyone else knows it.</p>
+  </div>
 </div>
 {% endblock %}

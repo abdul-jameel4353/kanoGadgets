@@ -1,5 +1,5 @@
 {% extends "seller/base.html" %}
-{% block title %}Edit Product — KanoGadgets.com{% endblock %}
+{% block title %}Edit Product — KanoPlug.com{% endblock %}
 {% block content %}
 <div class="dash-header" style="margin-bottom:20px">
   <div>
@@ -45,7 +45,7 @@
         {% for im in imgs %}
         <div class="g-item {% if im.is_main %}main{% endif %}">
           <img src="{{ url_for('uploads', fn=im.file) }}">
-          {% if im.is_main %}<span style="position:absolute;top:6px;left:6px;background:rgba(0,123,255,.9);color:#fff;font:700 9.5px var(--font-h);
+          {% if im.is_main %}<span style="position:absolute;top:6px;left:6px;background:rgba(212,175,55,.9);color:#fff;font:700 9.5px var(--font-h);
              padding:2px 6px;border-radius:4px">MAIN</span>{% endif %}
         </div>
         {% endfor %}
