@@ -1,5 +1,5 @@
 {% extends "admin/base.html" %}
-{% block title %}Admin Dashboard — KanoGadgets.com{% endblock %}
+{% block title %}Admin Dashboard — KanoPlug.com{% endblock %}
 {% block content %}
 <div class="dash-header">
   <div>
@@ -9,7 +9,7 @@
 </div>
 
 <div class="stat-grid">
-  <div class="stat-card"><div class="ic" style="background:rgba(0,123,255,.12)">👥</div><div class="num">{{ stats.sellers }}</div><div class="lbl">Total Sellers</div></div>
+  <div class="stat-card"><div class="ic" style="background:rgba(212,175,55,.12)">👥</div><div class="num">{{ stats.sellers }}</div><div class="lbl">Total Sellers</div></div>
   <div class="stat-card"><div class="ic" style="background:rgba(34,197,94,.12)">📦</div><div class="num">{{ stats.published }}</div><div class="lbl">Active Listings</div></div>
   <div class="stat-card"><div class="ic" style="background:rgba(255,171,0,.12)">✨</div><div class="num">{{ stats.new_sellers }}</div><div class="lbl">New Sellers · 7 days</div></div>
   <div class="stat-card"><div class="ic" style="background:rgba(255,90,106,.12)">⚑</div><div class="num">{{ stats.flagged }}</div><div class="lbl">Flagged Listings</div></div>

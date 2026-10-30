@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block title %}My Account — KanoPlug.com{% endblock %}
+{% block content %}
+<div class="dash-header"><h1>My Account</h1></div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:900px">
+  <div class="form-card" style="margin:0">
+    <h3>👤 Profile details</h3>
+    <form method="post">
+      <input type="hidden" name="sect" value="profile">
+      <div class="field"><label>Name *</label><input name="name" value="{{ user.name }}" required></div>
+      <div class="field"><label>Email address *</label><input name="email" type="email" value="{{ user.email }}" required></div>
+      <div class="field"><label>Phone number</label><input name="phone" value="{{ user.phone or '' }}" placeholder="08031234567"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Save</button>
+    </form>
+  </div>
+
+  <div class="form-card" style="margin:0">
+    <h3>🔒 Security</h3>
+    <form method="post">
+      <input type="hidden" name="sect" value="security">
+      <div class="field"><label>Current password</label><input name="current_password" type="password" required autocomplete="current-password"></div>
+      <div class="field"><label>New password (min 10 chars)</label><input name="new_password" type="password" required autocomplete="new-password"></div>
+      <div class="field"><label>Confirm new password</label><input name="confirm_password" type="password" required autocomplete="new-password"></div>
+      <button class="btn" style="width:100%;justify-content:center">Change Password</button>
+    </form>
+    <p class="muted" style="font-size:11.5px;margin-top:14px">Passwords are stored as secure hashes. Change it regularly on the owner account.</p>
+  </div>
+</div>
+{% endblock %}
