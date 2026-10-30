@@ -11,33 +11,32 @@
 <div class="stat-grid">
   <div class="stat-card"><div class="ic" style="background:rgba(0,123,255,.12)">👥</div><div class="num">{{ stats.sellers }}</div><div class="lbl">Total Sellers</div></div>
   <div class="stat-card"><div class="ic" style="background:rgba(34,197,94,.12)">📦</div><div class="num">{{ stats.published }}</div><div class="lbl">Active Listings</div></div>
-  <div class="stat-card"><div class="ic" style="background:rgba(255,171,0,.12)">✉️</div><div class="num">{{ stats.pending_applications }}</div><div class="lbl">Pending Applications</div></div>
+  <div class="stat-card"><div class="ic" style="background:rgba(255,171,0,.12)">✨</div><div class="num">{{ stats.new_sellers }}</div><div class="lbl">New Sellers · 7 days</div></div>
   <div class="stat-card"><div class="ic" style="background:rgba(255,90,106,.12)">⚑</div><div class="num">{{ stats.flagged }}</div><div class="lbl">Flagged Listings</div></div>
 </div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="two-col">
-  <!-- applications needing review -->
+  <!-- newest sellers (registration is instant now) -->
   <div class="table-card">
     <div class="section-head" style="padding:14px 16px;border-bottom:1px solid var(--line);margin:0">
-      <h2 style="font-size:16px">Recent applications</h2>
-      <a href="{{ url_for('admin_applications') }}">All →</a>
+      <h2 style="font-size:16px">Newest sellers</h2>
+      <a href="{{ url_for('admin_sellers') }}">All →</a>
     </div>
     {% if recent_apps %}
     <table class="tbl tbl-sm">
-      <thead><tr><th>Name</th><th>Shop</th><th>Location</th><th>Date</th><th></th></tr></thead>
+      <thead><tr><th>Name</th><th>Username</th><th>Joined</th><th></th></tr></thead>
       <tbody>
         {% for a in recent_apps %}
         <tr>
           <td><strong style="color:#fff">{{ a.full_name }}</strong></td>
-          <td class="muted">{{ a.shop_name }}</td>
-          <td class="muted" style="font-size:12px">{{ a.shop_location }}</td>
+          <td class="muted">@{{ a.username }}</td>
           <td class="muted" style="font-size:12px">{{ a.created_at[:10] }}</td>
-          <td><a class="btn btn-ghost btn-sm" href="{{ url_for('admin_application_detail', aid=a.id) }}">Review</a></td>
+          <td><span class="badge {{ a.status }}">{{ a.status }}</span></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-    {% else %}<div class="empty" style="border:none">No applications yet.</div>{% endif %}
+    {% else %}<div class="empty" style="border:none">No sellers yet.</div>{% endif %}
   </div>
 
   <!-- recently published products -->

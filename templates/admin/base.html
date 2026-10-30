@@ -167,7 +167,7 @@ h1,h2,h3{font-family:var(--font-h);letter-spacing:-.025em;color:#fff}
     <h3>Admin</h3>
     <a href="{{ url_for('admin_home') }}" class="{% if request.endpoint=='admin_home' %}active{% endif %}"><span class="ico">⬢</span>Dashboard</a>
     <a href="{{ url_for('admin_sellers') }}" class="{% if request.endpoint=='admin_sellers' %}active{% endif %}"><span class="ico">👥</span>Sellers</a>
-    <a href="{{ url_for('admin_applications') }}" class="{% if 'application' in request.endpoint %}active{% endif %}"><span class="ico">✉️</span>Applications</a>
+
     <a href="{{ url_for('admin_products') }}" class="{% if request.endpoint=='admin_products' %}active{% endif %}"><span class="ico">📦</span>Products</a>
     <a href="{{ url_for('admin_reports') }}" class="{% if request.endpoint=='admin_reports' %}active{% endif %}"><span class="ico">⚑</span>Reports</a>
     <h3>Site</h3>
