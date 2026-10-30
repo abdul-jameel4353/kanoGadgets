@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Account — KanoPlug.com</title>
+<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;rect width='100' height='100' rx='24' fill='%230A0A0B'/&gt;&lt;text x='50' y='68' font-family='Montserrat,Arial' font-size='56' font-weight='800' text-anchor='middle' fill='%23D4AF37'&gt;K&lt;/text&gt;&lt;text x='62' y='68' font-family='Montserrat,Arial' font-size='56' font-weight='800' text-anchor='middle' fill='white'&gt;P&lt;/text&gt;&lt;/svg&gt;">
+<style>
+/* ============ ADMIN TIER — deep navy + electric blue, modernized ============ */
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:500;font-display:swap;src:url('static/fonts/montserrat-500.woff2') format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:600;font-display:swap;src:url('static/fonts/montserrat-600.woff2') format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:700;font-display:swap;src:url('static/fonts/montserrat-700.woff2') format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:800;font-display:swap;src:url('static/fonts/montserrat-800.woff2') format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:900;font-display:swap;src:url('static/fonts/montserrat-900.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('static/fonts/inter-400.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('static/fonts/inter-500.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url('static/fonts/inter-600.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:url('static/fonts/inter-700.woff2') format('woff2')}
+:root{
+  --blue:#D4AF37; --blue2:#F0C75E;
+  --navy:#060607; --navy2:#08101E; --panel:#0B1830; --panel2:#0E1E3A;
+  --line:rgba(219,186,102,.13); --line2:rgba(219,186,102,.26);
+  --txt:#CFDCF2; --txt2:#8298BC;
+  --green:#22C55E; --amber:#FFB020; --red:#FF4D5E;
+  --font-h:'Montserrat',Inter,system-ui,sans-serif; --font-b:'Inter',system-ui,sans-serif;
+  --r:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font-b);background:var(--navy);color:var(--txt);line-height:1.6;
+  background:radial-gradient(1100px 560px at 50% -16%,#1A1408 0%,transparent 62%),
+             radial-gradient(760px 480px at 106% 108%,#14100A 0%,transparent 55%),var(--navy);
+  font-size:15.5px;letter-spacing:.005em}
+body,button,input,select,textarea{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;font-feature-settings:"cv02","cv03","cv04","cv11","tnum"}
+a{color:inherit;text-decoration:none}
+.muted{color:var(--txt2)}
+h1,h2,h3{font-family:var(--font-h);letter-spacing:-.025em;color:#fff}
+
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:11px;padding:11px 18px;justify-content:center;
+  font:600 13.5px var(--font-h);letter-spacing:.01em;cursor:pointer;border:1px solid var(--line2);
+  background:#0E1E3C;color:var(--txt);transition:.2s cubic-bezier(.2,.8,.3,1);white-space:nowrap}
+.btn:hover{border-color:var(--blue2);color:#fff;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:linear-gradient(135deg,#D4AF37,#F0C75E);border:none;color:#fff;
+  box-shadow:0 10px 28px -8px rgba(212,175,55,.7), inset 0 1px 0 rgba(255,255,255,.22)}
+.btn-primary:hover{box-shadow:0 14px 34px -6px rgba(240,199,94,.8)}
+.btn-wa{background:linear-gradient(135deg,#16A34A,#22C55E);border:none;color:#fff}
+.btn-danger{background:linear-gradient(135deg,#F43F5E,#FF4D5E);border:none;color:#fff}
+.btn-ghost{background:transparent;border-color:var(--line2);color:var(--txt2)}
+.btn-ghost:hover{color:#fff;border-color:var(--blue2)}
+.btn-sm{padding:7px 13px;font-size:12.5px;border-radius:9px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 26px;position:sticky;top:0;z-index:40;
+  background:linear-gradient(180deg,rgba(8,16,30,.95),rgba(8,16,30,.85));backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);box-shadow:0 10px 26px -18px rgba(212,175,55,.6)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-h);color:#fff;font-size:15.5px}
+.brand .mk{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#D4AF37,#F0C75E);display:grid;place-items:center;
+  font-size:14.5px;font-weight:900;letter-spacing:-.03em;box-shadow:0 0 18px rgba(212,175,55,.65), inset 0 1px 0 rgba(255,255,255,.25)}
+.brand .wm{font-weight:800;letter-spacing:-.02em}
+.brand .wm b{color:var(--blue2)}
+.userchip{display:flex;align-items:center;gap:10px;color:var(--txt2);font-size:13.5px}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));display:grid;place-items:center;
+  color:#fff;font:800 13.5px var(--font-h);box-shadow:0 0 0 2px rgba(240,199,94,.4), 0 0 14px rgba(240,199,94,.6)}
+
+.dash-shell{display:flex;min-height:calc(100vh - 60px)}
+.dash-nav{width:248px;flex-shrink:0;background:linear-gradient(180deg,#08101E 0%,#070D19 100%);
+  border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:3px}
+.dash-nav h3{font:700 10.5px var(--font-h);color:#546896;text-transform:uppercase;letter-spacing:.16em;margin:20px 12px 8px}
+.dash-nav a{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;font:500 14px var(--font-b);color:var(--txt2);
+  transition:.18s cubic-bezier(.2,.8,.3,1);position:relative}
+.dash-nav a .ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(240,199,94,.09);font-size:14px;transition:.18s}
+.dash-nav a:hover{color:#fff;background:rgba(240,199,94,.10)}
+.dash-nav a:hover .ico{background:rgba(240,199,94,.22)}
+.dash-nav a.active{background:linear-gradient(120deg,rgba(212,175,55,.34),rgba(240,199,94,.14));color:#fff;font-weight:600}
+.dash-nav a.active .ico{background:linear-gradient(135deg,#D4AF37,#F0C75E);box-shadow:0 4px 16px -2px rgba(212,175,55,.8)}
+.dash-nav a.active::before{content:'';position:absolute;left:-16px;top:20%;bottom:20%;width:3px;border-radius:0 3px 3px 0;
+  background:linear-gradient(180deg,#D4AF37,#F0C75E);box-shadow:0 0 10px rgba(212,175,55,.9)}
+.dash-bottom{margin-top:auto;padding-top:18px;border-top:1px solid var(--line)}
+.dash-body{flex:1;padding:30px 34px}
+.dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:12px}
+.dash-header h1{margin:0;font:800 27px var(--font-h)}
+.dash-header p{margin:4px 0 0;font-size:13.5px}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:26px}
+.stat-card{background:linear-gradient(165deg,#0C1B36,#081020);border:1px solid var(--line);border-radius:var(--r);padding:22px;
+  box-shadow:0 16px 38px -16px rgba(2,6,18,.95), inset 0 1px 0 rgba(219,186,102,.08);transition:.2s}
+.stat-card:hover{transform:translateY(-2px);border-color:var(--line2)}
+.stat-card .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;font-size:19px;
+  background:linear-gradient(135deg,rgba(212,175,55,.28),rgba(240,199,94,.12));border:1px solid rgba(219,186,102,.22)}
+.stat-card .num{font:800 30px/1.1 var(--font-h);color:#F5D76E;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  text-shadow:0 0 20px rgba(240,199,94,.45)}
+.stat-card .lbl{font:600 12.5px var(--font-h);color:var(--txt2);margin-top:3px}
+
+.table-card{background:linear-gradient(165deg,#0C1B36,#081020);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  box-shadow:0 16px 38px -16px rgba(2,6,18,.95), inset 0 1px 0 rgba(219,186,102,.08)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{background:rgba(8,17,36,.9);text-align:left;padding:13px 16px;font:700 11px var(--font-h);letter-spacing:.12em;
+  text-transform:uppercase;color:#6C81AB;border-bottom:1px solid var(--line)}
+.tbl td{padding:14px 16px;border-bottom:1px solid rgba(219,186,102,.08);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:.15s}
+.tbl tbody tr:hover{background:rgba(240,199,94,.06)}
+.tbl strong{color:#fff;font-weight:600}
+.tbl .muted{color:#7E93B8;font-size:12.5px}
+.tbl a{color:#E8CF8A;font-weight:600}
+
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font:700 11px var(--font-h);letter-spacing:.04em;
+  border:1px solid transparent}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.published,.badge.active,.badge.approved,.badge.resolved{background:rgba(34,197,94,.13);color:#4ADE80;border-color:rgba(34,197,94,.28)}
+.badge.pending,.badge.open,.badge.under_review,.badge.draft{background:rgba(255,176,32,.13);color:#FFB020;border-color:rgba(255,176,32,.28)}
+.badge.removed,.badge.suspended,.badge.rejected{background:rgba(255,77,94,.13);color:#FF8494;border-color:rgba(255,77,94,.28)}
+.badge.dismissed{background:rgba(219,186,102,.10);color:#7E93B8;border-color:var(--line)}
+
+.form-card{background:linear-gradient(165deg,#0C1B36,#081020);border:1px solid var(--line);border-radius:var(--r);padding:26px;max-width:660px;
+  box-shadow:0 16px 38px -16px rgba(2,6,18,.95)}
+.form-card h3{margin:0 0 16px;font:700 16px var(--font-h);color:#fff;letter-spacing:-.02em}
+.field{margin-bottom:17px}
+.field label{display:block;font:600 12.5px var(--font-h);margin-bottom:7px;color:#A6BAE0;letter-spacing:.01em}
+.field input,.field select,.field textarea{width:100%;background:#0A1428;border:1px solid var(--line2);border-radius:11px;color:#fff;
+  padding:12px 14px;font-size:14.5px;outline:none;font-family:var(--font-b);transition:.18s}
+.field input:hover,.field select:hover,.field textarea:hover{border-color:rgba(219,186,102,.45)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue2);box-shadow:0 0 0 4px rgba(240,199,94,.14)}
+.pp-box{background:#04070D;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:340px;margin:0 auto}
+.pp-box img{max-width:100%;border-radius:8px;display:block}
+
+.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:16px}
+.section-head h2{margin:0;font:800 20px var(--font-h)}
+.section-head a{color:#E8CF8A;font-size:13px;font-weight:600}
+.empty{background:#0A152B;border:1px dashed var(--line2);border-radius:var(--r);padding:44px 24px;text-align:center;color:var(--txt2)}
+.empty strong{display:block;color:#fff;font:700 15.5px var(--font-h);margin-bottom:6px}
+
+.flash-wrap{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:8px;max-width:min(560px,92vw)}
+.flash{background:#0C1B36;border:1px solid var(--line2);border-left:4px solid var(--green);border-radius:12px;padding:12px 18px;font-size:14px;
+  box-shadow:0 16px 40px -10px rgba(0,0,0,.6);transition:.3s;color:#fff}
+.flash.err{border-left-color:var(--red)}
+.flash.ok{border-left-color:var(--green)}
+
+.h3{font:700 16px var(--font-h);color:#fff;letter-spacing:-.02em}
+.check{display:flex;gap:10px;align-items:start;font-size:13.5px;color:#93A9CC;margin:14px 0}
+
+@media(max-width:860px){
+  .dash-shell{flex-direction:column}
+  .dash-nav{width:100%;flex-direction:row;overflow:auto;border-right:none;border-bottom:1px solid var(--line);padding:12px 14px}
+  .dash-nav h3,.dash-nav a::before{display:none}
+  .dash-body{padding:18px}.two-col{grid-template-columns:1fr!important}
+}
+</style>
+</head>
+<body>
+
+  
+
+
+<div class="topbar">
+  <a class="brand" href="public.html"><span class="mk">KP</span><span class="wm">Kano<b>Plug</b> · Admin</span></a>
+  <div class="userchip">
+    <span class="avatar">K</span>
+    <span>Kano Plug Owner <span class="muted">(owner)</span></span>
+    <a class="btn btn-ghost btn-sm" href="public.html">View store</a>
+  </div>
+</div>
+
+<div class="dash-shell">
+  <nav class="dash-nav">
+    <h3>Admin</h3>
+    <a href="admin.html" class=""><span class="ico">⬢</span>Dashboard</a>
+    <a href="admin-sellers.html" class=""><span class="ico">👥</span>Sellers</a>
+
+    <a href="admin-products.html" class=""><span class="ico">📦</span>Products</a>
+    <a href="admin-reports.html" class=""><span class="ico">⚑</span>Reports</a>
+    <h3>Site</h3>
+    <a href="admin-categories.html" class=""><span class="ico">🗂️</span>Categories</a>
+    <a href="admin-moderation.html" class=""><span class="ico">🧾</span>Moderation Log</a>
+    <a href="admin-account.html" class="active"><span class="ico">⚙️</span>My Account</a>
+    <div class="dash-bottom"><a href="/logout"><span class="ico">⎋</span>Log Out</a></div>
+  </nav>
+  <main class="dash-body">
+    
+<div class="dash-header"><h1>My Account</h1></div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:900px">
+  <div class="form-card" style="margin:0">
+    <h3>👤 Profile details</h3>
+    <form method="post">
+      <input type="hidden" name="sect" value="profile">
+      <div class="field"><label>Name *</label><input name="name" value="Kano Plug Owner" required=""></div>
+      <div class="field"><label>Email address *</label><input name="email" type="email" value="admin@kanogadgets.com" required=""></div>
+      <div class="field"><label>Phone number</label><input name="phone" value="" placeholder="08031234567"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Save</button>
+    </form>
+  </div>
+
+  <div class="form-card" style="margin:0">
+    <h3>🔒 Security</h3>
+    <form method="post">
+      <input type="hidden" name="sect" value="security">
+      <div class="field"><label>Current password</label><input name="current_password" type="password" required="" autocomplete="current-password"></div>
+      <div class="field"><label>New password (min 10 chars)</label><input name="new_password" type="password" required="" autocomplete="new-password"></div>
+      <div class="field"><label>Confirm new password</label><input name="confirm_password" type="password" required="" autocomplete="new-password"></div>
+      <button class="btn" style="width:100%;justify-content:center">Change Password</button>
+    </form>
+    <p class="muted" style="font-size:11.5px;margin-top:14px">Passwords are stored as secure hashes. Change it regularly on the owner account.</p>
+  </div>
+</div>
+
+  </main>
+</div>
+<script>document.querySelectorAll('.flash').forEach(el=>setTimeout(()=>{el.style.opacity=0;el.style.transform='translateY(-4px)'},4500))</script>
+
+<script>
+      document.addEventListener('click', e => {
+        const a = e.target.closest('a[href^="/"]');
+        if (a) { e.preventDefault(); note(); }
+      });
+      document.addEventListener('submit', e => { e.preventDefault(); note(); });
+      function note(){
+        let t = document.getElementById('kg-toast');
+        if(!t){ t=document.createElement('div'); t.id='kg-toast';
+          t.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#131313;color:#fff;border:1px solid rgba(212,175,55,.35);border-radius:12px;padding:12px 20px;font:13px system-ui;z-index:9999;box-shadow:0 12px 30px rgba(0,0,0,.6);transition:.3s';
+          t.textContent='Static preview — run the live app to use actions (login, publish…)'; document.body.appendChild(t);}
+        t.style.opacity=1; clearTimeout(window.__kgt); window.__kgt=setTimeout(()=>t.style.opacity=0,2600);
+      }
+    </script></body></html>
