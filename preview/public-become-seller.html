@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Become a Seller — KanoGadgets.com</title>
+  <title>Start Selling — KanoGadgets.com</title>
   <meta name="description" content="Discover smartphones, laptops, accessories and more from trusted sellers in Kano's Gadget Center, Kano State, Nigeria.">
   <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;rect width='100' height='100' rx='22' fill='%230A0F1C'/&gt;&lt;text x='50' y='68' font-family='Montserrat,Arial' font-size='58' font-weight='800' text-anchor='middle' fill='%23007BFF'&gt;K&lt;/text&gt;&lt;text x='50' y='68' font-family='Montserrat,Arial' font-size='58' font-weight='800' text-anchor='middle' fill='white' dx='18'&gt;G&lt;/text&gt;&lt;/svg&gt;">
   <style>
@@ -278,31 +278,24 @@ body.nav-open .drawer{transform:none}
     
 <section class="section" style="padding-top:36px">
   <div class="form-card" style="max-width:560px">
-    <h2 style="margin:0;font:800 23px var(--font-h);color:#fff">Become a Seller</h2>
-    <p class="muted" style="margin-bottom:22px">KanoGadgets.com is exclusively for people who genuinely work in Kano's Gadget Center.
-       Applications are reviewed before publishing access is granted.</p>
+    <h2 style="margin:0;font:800 23px var(--font-h);color:#fff">Start selling on KanoGadgets</h2>
+    <p class="muted" style="margin-bottom:22px">Create your seller account and publish your first listing
+       <strong style="color:#9FB2CF">immediately</strong> — no waiting, no approval queue.
+       Exclusively for people who genuinely work in Kano's Gadget Center.</p>
 
     
 
-    <form method="post" enctype="multipart/form-data">
-      <div class="field"><label>Full legal name *</label><input name="full_name" value="" required=""></div>
-      <div class="field"><label>Email address *</label><input name="email" type="email" value="" required=""></div>
-      <div class="field"><label>Phone number *</label><input name="phone" value="" placeholder="08031234567" required=""></div>
-      <div class="field"><label>Shop name *</label><input name="shop_name" value="" required=""></div>
-      <div class="field"><label>Shop location in Kano *</label><input name="shop_location" value="" placeholder="e.g. Kano Gadget Center, Shop B12" required=""></div>
-      <div class="field"><label>Shop address / details</label><input name="shop_address" value=""></div>
-      <div class="field"><label>Why do you want to sell on KanoGadgets.com? *</label>
-        <textarea name="reason" rows="4" required=""></textarea></div>
-
-      <div class="field">
-        <label>Passport photograph * (jpg/png/webp, ≤8 MB)</label>
-        <label class="up-panel">
-          <input type="file" name="passport_photo" accept=".jpg,.jpeg,.png,.webp" hidden="" onchange="pv(this)">
-          📷 Select or drop your photo
-          <small>Used only to verify your application. Never shown publicly.</small>
-        </label>
-        <div id="pv" style="margin-top:10px;display:none"><img style="max-width:160px;border-radius:8px;border:1px solid var(--line2)"></div>
-      </div>
+    <form method="post">
+      <div class="field"><label>Full name *</label><input name="full_name" value="" placeholder="e.g. Abdullahi Musa Idris" required=""></div>
+      <div class="field"><label>Email address *</label><input name="email" type="email" value="" placeholder="you@gmail.com" required=""></div>
+      <div class="field"><label>Phone number (WhatsApp) *</label><input name="phone" value="" placeholder="08031234567 or +2348031234567" required="">
+        <small style="color:#6B84A3">Customers will chat you on WhatsApp at this number.</small></div>
+      <div class="field"><label>Username *</label><input name="username" value="" placeholder="e.g. gadgetsbyaminu" required="">
+        <small style="color:#6B84A3">This is what buyers see as your shop name on the website.</small></div>
+      <div class="field"><label>Why do you want to join? *</label>
+        <textarea name="reason" rows="3" required="" placeholder="Tell us in one or two sentences"></textarea></div>
+      <div class="field"><label>Password * (min 10 characters)</label><input name="password" type="password" required="" autocomplete="new-password"></div>
+      <div class="field"><label>Confirm password *</label><input name="confirm" type="password" required="" autocomplete="new-password"></div>
 
       <div class="check">
         <input type="checkbox" name="rules" id="r" required="">
@@ -311,11 +304,11 @@ body.nav-open .drawer{transform:none}
         </label>
       </div>
 
-      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px">Submit Application</button>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px">Create Seller Account</button>
     </form>
 
     <p class="muted" style="font-size:12px;margin-top:16px;text-align:center">
-      Your photo is used only for seller verification and is not shown publicly.
+      Instant access — your account works the moment you sign up. The owner can suspend accounts that break the rules.
     </p>
   </div>
 </section>
@@ -353,16 +346,6 @@ body.nav-open .drawer{transform:none}
     document.querySelectorAll('.flash').forEach(el => setTimeout(() => { el.style.opacity = 0; el.style.transform = 'translateY(-4px)'; }, 4500));
   </script>
   
-<script>
-function pv(input){
-  const d = document.getElementById('pv');
-  if(input.files && input.files[0]){
-    d.style.display='block';
-    d.querySelector('img').src = URL.createObjectURL(input.files[0]);
-  }
-}
-</script>
-
 
 <script>
       document.addEventListener('click', e => {
