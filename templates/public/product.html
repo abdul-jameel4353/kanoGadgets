@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ p.name }} — ₦{{ '{:,}'.format(p.price) if p.price else '' }} — KanoGadgets.com{% endblock %}
+{% block title %}{{ p.name }} — ₦{{ '{:,}'.format(p.price) if p.price else '' }} — KanoPlug.com{% endblock %}
 {% block content %}
 <section class="section">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px" class="two-col">
@@ -48,16 +48,20 @@
       <!-- seller card -->
       <a href="{{ url_for('public_seller', sid=seller.id) }}" style="display:block;background:var(--card);border:1px solid var(--line);
           border-radius:12px;padding:16px;display:flex;gap:14px;align-items:center;text-decoration:none;margin-top:12px">
+        {% if seller.avatar %}
+        <img src="{{ url_for('uploads', fn=seller.avatar) }}" alt="{{ seller.shop_name }}" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,175,55,.45)">
+        {% else %}
         <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));
              display:grid;place-items:center;color:#fff;font:800 16px var(--font-h)">{{ seller.shop_name[:2]|upper }}</div>
+        {% endif %}
         <div>
           <strong style="color:#fff;font:700 14px var(--font-h)">{{ seller.shop_name }}</strong><br>
-          <span class="muted" style="font-size:12.5px">📍 {{ p.location or seller.location }} • Verified Seller</span>
+          <span class="muted" style="font-size:12.5px">📍 {{ p.location or seller.location }} • Kano Gadget Center seller</span>
         </div>
         <span style="margin-left:auto;color:var(--blue);font-size:13px">View shop →</span>
       </a>
       <p class="muted" style="font-size:12px;margin-top:10px">
-        This listing was published by the seller. KanoGadgets.com is a discovery and contact platform —
+        This listing was published by the seller. KanoPlug.com is a discovery and contact platform —
         we don't process payments or delivery.
       </p>
     </div>

@@ -1,12 +1,19 @@
 {% extends "base.html" %}
-{% block title %}{{ sp.shop_name }} — KanoGadgets.com{% endblock %}
+{% block title %}{{ sp.shop_name }} — KanoPlug.com{% endblock %}
 {% block content %}
 <section class="section">
   <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:18px;margin-bottom:24px">
-    <div>
-      <div class="badge badge-published" style="margin-bottom:8px">VERIFIED SELLER</div>
-      <h2 style="margin:0;font:800 26px var(--font-h);color:#fff">{{ sp.shop_name }}</h2>
-      <p class="muted" style="margin-top:4px">📍 {{ sp.location }} · {{ products|length }} active listing{{ 's' if products|length != 1 }}</p>
+    <div style="display:flex;gap:16px;align-items:center">
+      {% if sp.avatar %}
+      <img src="{{ url_for('uploads', fn=sp.avatar) }}" alt="{{ sp.shop_name }}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,175,55,.5);flex-shrink:0">
+      {% else %}
+      <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));display:grid;place-items:center;color:#fff;font:800 24px var(--font-h);flex-shrink:0">{{ sp.shop_name[:2]|upper }}</div>
+      {% endif %}
+      <div>
+        <div class="badge badge-published" style="margin-bottom:8px">KANO GADGET CENTER SELLER</div>
+        <h2 style="margin:0;font:800 26px var(--font-h);color:#fff">{{ sp.shop_name }}</h2>
+        <p class="muted" style="margin-top:4px">@{{ sp.username }} · 📍 {{ sp.location }} · {{ products|length }} active listing{{ 's' if products|length != 1 }}</p>
+      </div>
     </div>
     {% if wa_link %}
     <a href="{{ wa_link }}" target="_blank" rel="noopener" class="btn btn-wa" style="font-size:14px;padding:12px 20px">💬 Chat with {{ sp.shop_name }}</a>
