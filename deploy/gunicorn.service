@@ -1,0 +1,14 @@
+[Unit]
+Description=KanoGadgets Flask app (gunicorn)
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/kanogadgets
+Environment="KG_SECRET_KEY=REPLACE_ME_WITH_LONG_RANDOM_SECRET"
+ExecStart=/var/www/kanogadgets/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 wsgi:application
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
