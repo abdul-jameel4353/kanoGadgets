@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS seller_applications(
 CREATE TABLE IF NOT EXISTS seller_profiles(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL UNIQUE REFERENCES users(id),
+  avatar TEXT,
   display_name TEXT NOT NULL,
   shop_name TEXT NOT NULL,
   shop_description TEXT DEFAULT '',
@@ -145,9 +146,10 @@ def init_db():
     d.executescript(SCHEMA)
     # lightweight migrations for existing databases
     for col, ddl in [("username", "ALTER TABLE users ADD COLUMN username TEXT"),
-                     ("join_reason", "ALTER TABLE users ADD COLUMN join_reason TEXT")]:
+                     ("join_reason", "ALTER TABLE users ADD COLUMN join_reason TEXT"),
+                     ("avatar", "ALTER TABLE seller_profiles ADD COLUMN avatar TEXT")]:
         try:
-            d.execute(f"SELECT {col} FROM users LIMIT 1")
+            d.execute(f"SELECT {col} FROM {'seller_profiles' if col == 'avatar' else 'users'} LIMIT 1")
         except sqlite3.OperationalError:
             d.execute(ddl)
     d.execute("CREATE UNIQUE INDEX IF NOT EXISTS ux_users_username ON users(username COLLATE NOCASE) WHERE username IS NOT NULL")

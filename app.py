@@ -1,4 +1,4 @@
-"""KanoGadgets.com — public marketplace + seller dashboard + owner admin.
+"""KanoPlug.com — public marketplace + seller dashboard + owner admin.
 
 Stack: Flask + SQLite + bcrypt. Every protected route is enforced server-side.
 No external auth keys are required for the core; a real SMS/Google sign-in would
@@ -233,20 +233,20 @@ def product_page(pid):
         WHERE p.category_id=? AND p.id!=? AND p.status='published' AND u.status='active'
         ORDER BY RANDOM() LIMIT 4""", (p["category_id"], pid))
     wa = wa_link(seller["whatsapp"],
-                 f"Hello, I found your product on KanoGadgets.com. I'm interested in {p['name']}. Is it still available?")
+                 f"Hello, I found your product on KanoPlug.com. I'm interested in {p['name']}. Is it still available?")
     return render_template("public/product.html", p=p, imgs=imgs, seller=seller,
                            related=related, money=money, wa_link=wa)
 
 
 @app.route("/seller/<int:sid>")
 def public_seller(sid):
-    sp = models.one("SELECT sp.*, u.status FROM seller_profiles sp JOIN users u ON u.id=sp.user_id WHERE sp.id=?", (sid,))
+    sp = models.one("SELECT sp.*, u.status, u.username FROM seller_profiles sp JOIN users u ON u.id=sp.user_id WHERE sp.id=?", (sid,))
     if not sp or sp["status"] != "active":
         abort(404)
     products = models.q("""
         SELECT p.*, (SELECT file FROM product_images WHERE product_id=p.id AND is_main=1 LIMIT 1) AS main_img
         FROM products p WHERE p.seller_id=? AND p.status='published' ORDER BY p.created_at DESC""", (sid,))
-    wa = wa_link(sp["whatsapp"], "Hello, I found your shop on KanoGadgets.com and I'd like to chat.")
+    wa = wa_link(sp["whatsapp"], "Hello, I found your shop on KanoPlug.com and I'd like to chat.")
     return render_template("public/seller.html", sp=sp, products=products, money=money, wa_link=wa)
 
 
@@ -278,7 +278,7 @@ def report_general():
             d.execute("INSERT INTO admin_activity(actor_id,actor_name,action,meta) VALUES(NULL,'GENERAL_REPORT',?,?)",
                       (reason, f"{email}: {details[:500]}"))
             d.commit(); d.close()
-            flash("Report received. Thank you for helping keep KanoGadgets.com safe.", "ok")
+            flash("Report received. Thank you for helping keep KanoPlug.com safe.", "ok")
             return redirect(url_for("index"))
     return render_template("public/report_general.html")
 
@@ -394,7 +394,7 @@ def become_seller():
         session.clear()
         session["uid"] = uid
         session.permanent = True
-        flash(f"Welcome to KanoGadgets, {username}! Your seller account is live — add your first product now.", "ok")
+        flash(f"Welcome to KanoPlug, {username}! Your seller account is live — add your first product now.", "ok")
         return redirect(url_for("seller_home"))
     return render_template("public/become_seller.html", form={})
 
@@ -536,22 +536,84 @@ def seller_delete_product(pid):
 @app.route("/seller/profile", methods=["GET", "POST"])
 @requires_seller
 def seller_profile():
-    sp = models.one("SELECT * FROM seller_profiles WHERE user_id=?", (g.user["id"],))
+    u = g.user
+    sp = models.one("SELECT * FROM seller_profiles WHERE user_id=?", (u["id"],))
     if request.method == "POST":
         f = request.form
-        wa = norm_phone(f.get("whatsapp", ""))
-        if not wa:
-            flash("Invalid WhatsApp number.", "err")
-            return redirect(url_for("seller_profile"))
+        sect = f.get("sect", "shop")
         d = models.get_db()
-        d.execute("""UPDATE seller_profiles SET display_name=?,shop_name=?,shop_description=?,
-                     location=?,whatsapp=?,contact_email=?,updated_at=? WHERE user_id=?""",
-                  (f["display_name"].strip(), f["shop_name"].strip(), f.get("shop_description", "").strip(),
-                   f["location"].strip(), wa, f.get("contact_email", "").strip(), now(), g.user["id"]))
-        d.commit(); d.close()
-        flash("Shop profile updated.", "ok")
+        try:
+            if sect == "shop":                                  # public shop info
+                wa = norm_phone(f.get("whatsapp", ""))
+                if not wa:
+                    flash("Invalid WhatsApp number.", "err")
+                    return redirect(url_for("seller_profile"))
+                d.execute("""UPDATE seller_profiles SET display_name=?,shop_name=?,shop_description=?,
+                             location=?,whatsapp=?,contact_email=?,updated_at=? WHERE user_id=?""",
+                          (f["display_name"].strip(), f["shop_name"].strip(), f.get("shop_description", "").strip(),
+                           f["location"].strip(), wa, f.get("contact_email", "").strip(), now(), u["id"]))
+                d.execute("UPDATE users SET phone=?,updated_at=? WHERE id=?", (wa, now(), u["id"]))
+                d.commit()
+                flash("Shop profile updated.", "ok")
+
+            elif sect == "account":                             # username / email / profile photo
+                uname = f.get("username", "").strip()
+                email = f.get("email", "").strip().lower()
+                email2 = f.get("contact_email_acct", "").strip().lower() or email
+                errs = []
+                if not re.fullmatch(r"[A-Za-z0-9_.\-]{3,24}", uname or ""):
+                    errs.append("Username: 3–24 letters/digits/. _ -")
+                elif uname.lower() != (u["username"] or "").lower() and \
+                     models.one("SELECT 1 FROM users WHERE username=? COLLATE NOCASE", (uname,)):
+                    errs.append("That username is taken")
+                if not re.match(r"^[\w.+-]+@[\w-]+\.[\w.]+$", email):
+                    errs.append("Enter a valid email")
+                elif email != u["email"] and models.one("SELECT 1 FROM users WHERE email=?", (email,)):
+                    errs.append("That email is already in use")
+                phone_raw = f.get("phone", "").strip()
+                pn = norm_phone(phone_raw) if phone_raw else None
+                if phone_raw and not pn:
+                    errs.append("Enter a valid Nigerian phone number — e.g. 0803 123 4567")
+                avatar_file = request.files.get("avatar")
+                av = None
+                if avatar_file and avatar_file.filename:
+                    os.makedirs(os.path.join(app.config["UPLOAD_FOLDER"], "avatars"), exist_ok=True)
+                    av = save_image(avatar_file, img_exts, folder=os.path.join(app.config["UPLOAD_FOLDER"], "avatars"))
+                    if not av:
+                        errs.append("Photo must be jpg/png/webp, ≤8 MB")
+                if errs:
+                    for e in errs:
+                        flash(e, "err")
+                    return redirect(url_for("seller_profile"))
+                d.execute("UPDATE users SET username=?, email=?, phone=COALESCE(?, phone), updated_at=? WHERE id=?",
+                          (uname, email, pn, now(), u["id"]))
+                if av:
+                    d.execute("UPDATE seller_profiles SET avatar=? WHERE user_id=?", (f"avatars/{av}", u["id"]))
+                d.execute("UPDATE seller_profiles SET display_name=?, contact_email=?, updated_at=? WHERE user_id=?",
+                          (uname, email2, now(), u["id"]))
+                d.commit()
+                flash("Account details updated." + (" Profile photo saved." if av else ""), "ok")
+
+            elif sect == "security":                            # password
+                cur = f.get("current_password", "")
+                pw1, pw2 = f.get("new_password", ""), f.get("confirm_password", "")
+                if not bcrypt.checkpw(cur.encode(), u["hash"].encode()):
+                    flash("Current password is wrong.", "err")
+                    return redirect(url_for("seller_profile"))
+                if len(pw1) < 10:
+                    flash("New password must be at least 10 characters.", "err")
+                    return redirect(url_for("seller_profile"))
+                if pw1 != pw2:
+                    flash("New passwords do not match.", "err")
+                    return redirect(url_for("seller_profile"))
+                h = bcrypt.hashpw(pw1.encode(), bcrypt.gensalt(rounds=12)).decode()
+                d.execute("UPDATE users SET hash=?,updated_at=? WHERE id=?", (h, now(), u["id"]))
+                d.commit()
+                flash("Password changed.", "ok")
+        finally:
+            d.close()
         return redirect(url_for("seller_profile"))
-    return render_template("seller/profile.html", sp=sp)
+    return render_template("seller/profile.html", sp=sp, user=u)
 
 
 @app.route("/seller/rules")
@@ -608,6 +670,53 @@ def admin_sellers():
         FROM seller_profiles sp JOIN users u ON u.id=sp.user_id
         ORDER BY sp.created_at DESC""")
     return render_template("admin/sellers.html", sellers=sellers)
+
+
+@app.route("/admin/account", methods=["GET", "POST"])
+@requires_admin
+def admin_account():
+    u = g.user
+    if request.method == "POST":
+        f = request.form
+        sect = f.get("sect", "profile")
+        d = models.get_db()
+        try:
+            if sect == "profile":
+                name = f.get("name", "").strip()
+                email = f.get("email", "").strip().lower()
+                phone = f.get("phone", "").strip()
+                errs = []
+                if not name:
+                    errs.append("Name is required")
+                if not re.match(r"^[\w.+-]+@[\w-]+\.[\w.]+$", email):
+                    errs.append("Enter a valid email")
+                elif email != u["email"] and models.one("SELECT 1 FROM users WHERE email=?", (email,)):
+                    errs.append("That email is already in use")
+                if errs:
+                    for e in errs:
+                        flash(e, "err")
+                    return redirect(url_for("admin_account"))
+                d.execute("UPDATE users SET name=?, email=?, phone=?, updated_at=? WHERE id=?",
+                          (name, email, norm_phone(phone) or phone or None, now(), u["id"]))
+                d.commit()
+                flash("Account updated.", "ok")
+            elif sect == "security":
+                cur = f.get("current_password", "")
+                pw1, pw2 = f.get("new_password", ""), f.get("confirm_password", "")
+                if not bcrypt.checkpw(cur.encode(), u["hash"].encode()):
+                    flash("Current password is wrong.", "err")
+                    return redirect(url_for("admin_account"))
+                if len(pw1) < 10 or pw1 != pw2:
+                    flash("Passwords must match and be at least 10 characters.", "err")
+                    return redirect(url_for("admin_account"))
+                d.execute("UPDATE users SET hash=?,updated_at=? WHERE id=?",
+                          (bcrypt.hashpw(pw1.encode(), bcrypt.gensalt(rounds=12)).decode(), now(), u["id"]))
+                d.commit()
+                flash("Password changed.", "ok")
+        finally:
+            d.close()
+        return redirect(url_for("admin_account"))
+    return render_template("admin/account.html", user=u)
 
 
 @app.route("/admin/seller/<int:uid>/toggle", methods=["POST"])
@@ -775,7 +884,13 @@ def _money(n):
 
 @app.context_processor
 def inject():
-    return dict(user=current_user(), now=datetime.datetime.now)
+    u = current_user()
+    av = None
+    if u and u["role"] == "seller":
+        row = models.one("SELECT avatar FROM seller_profiles WHERE user_id=?", (u["id"],))
+        if row and row["avatar"]:
+            av = url_for("uploads", fn=row["avatar"])
+    return dict(user=u, avatar_url=av, now=datetime.datetime.now)
 
 
 # ------------------------------------------------------------------ boot
@@ -795,9 +910,12 @@ def seed_categories():
         ("Other Gadgets", "other", "Everything else in the gadget center", "📦"),
     ]
     for name, slug, desc, icon in default:
+        img = f"cat/{slug}.png"
         if slug not in existing:
-            d.execute("INSERT INTO categories(name,slug,description,icon) VALUES(?,?,?,?)",
-                      (name, slug, desc, icon))
+            d.execute("INSERT INTO categories(name,slug,description,icon,image) VALUES(?,?,?,?,?)",
+                      (name, slug, desc, icon, img))
+        else:
+            d.execute("UPDATE categories SET image=? WHERE slug=?", (img, slug))
     d.commit(); d.close()
 
 

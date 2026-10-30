@@ -1,4 +1,4 @@
-# KanoGadgets.com
+# KanoPlug.com
 
 A complete gadget marketplace for Kano State, Nigeria — public site + private seller dashboard + owner admin,
 with real SQLite persistence, bcrypt auth, and role-enforced server-side access control.
@@ -19,7 +19,7 @@ with real SQLite persistence, bcrypt auth, and role-enforced server-side access 
 pip install -r requirements.txt
 export KG_SECRET_KEY="pick-a-long-random-secret"
 # 1. create the owner account ONCE (never a public signup form)
-python3 create_owner.py --email you@kanogadgets.com --name "Owner Name"
+python3 create_owner.py --email you@kanoplug.com --name "Owner Name"
 # 2. start
 python3 run.py        # → http://localhost:5000
 ```

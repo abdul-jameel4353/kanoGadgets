@@ -1,7 +1,7 @@
 """One-time owner-account bootstrap — CLI only, never a public web form.
 
 Usage:
-    python3 create_owner.py --email you@kanogadgets.com --name "Owner Name"
+    python3 create_owner.py --email you@kanoplug.com --name "Owner Name"
 """
 import os, sys, getpass, secrets, random
 import bcrypt
