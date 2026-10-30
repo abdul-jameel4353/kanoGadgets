@@ -10,7 +10,6 @@ from functools import wraps
 from flask import (Flask, request, session, redirect, url_for,
                    render_template, abort, send_from_directory, flash, g)
 import bcrypt
-from itsdangerous import URLSafeTimedSerializer
 
 import models
 
@@ -124,13 +123,6 @@ def save_image(fs, extset, folder=None, max_bytes=8 * 1024 * 1024):
 def now():
     return datetime.datetime.utcnow().isoformat(timespec="seconds")
 
-
-def invite_serializer():
-    return URLSafeTimedSerializer(app.config["SECRET_KEY"], salt="kg-invite")
-
-def invite_link(user_id):
-    tok = invite_serializer().dumps({"uid": user_id})
-    return url_for("set_password", token=tok)
 
 def exec_db(sql, params=()):
     d = models.get_db()
@@ -346,89 +338,73 @@ def logout():
     return redirect(url_for("index"))
 
 
-# ------------------------------------------------------------------ become a seller
+# ------------------------------------------------------------------ seller registration (instant — no review queue)
 @app.route("/become-seller", methods=["GET", "POST"])
 def become_seller():
     if request.method == "POST":
         f = request.form
-        files = request.files
+        full_name = f.get("full_name", "").strip()
+        email     = f.get("email", "").strip().lower()
+        phone_raw = f.get("phone", "").strip()
+        username  = f.get("username", "").strip()
+        reason    = f.get("reason", "").strip()
+        pw1, pw2  = f.get("password", ""), f.get("confirm", "")
         errs = []
-        for k, label in [("full_name", "Full name"), ("email", "Email"), ("phone", "Phone"),
-                         ("shop_name", "Shop name"), ("shop_location", "Shop location"),
-                         ("reason", "Reason")]:
-            if not f.get(k, "").strip():
+        for label, val in [("Full name", full_name), ("Email", email), ("Phone (WhatsApp)", phone_raw),
+                           ("Username", username), ("Reason for joining", reason)]:
+            if not val:
                 errs.append(f"{label} is required")
+        if email and not re.match(r"^[\w.+-]+@[\w-]+\.[\w.]+$", email):
+            errs.append("Enter a valid email address")
+        phone = norm_phone(phone_raw)
+        if phone_raw and not phone:
+            errs.append("Enter a valid Nigerian phone number — e.g. 0803 123 4567 or +234 803 123 4567")
+        if username:
+            if not re.fullmatch(r"[A-Za-z0-9_.\-]{3,24}", username):
+                errs.append("Username: 3–24 chars — letters, digits, dot, dash or underscore only")
+            elif models.one("SELECT 1 FROM users WHERE username=? COLLATE NOCASE", (username,)):
+                errs.append("That username is taken — pick another one")
+        if pw1 and len(pw1) < 10:
+            errs.append("Password must be at least 10 characters")
+        elif pw1 != pw2:
+            errs.append("Passwords do not match")
         if f.get("rules") != "on":
-            errs.append("You must read and accept the Seller Rules & Regulations")
-        photo = files.get("passport_photo")
-        pp = save_image(photo, passport_exts, folder=app.config["PRIVATE_FOLDER"])
-        if not pp:
-            errs.append("Passport photo required (jpg/png/webp, ≤8 MB)")
+            errs.append("You must accept the Seller Rules & Regulations")
+        if email and models.one("SELECT 1 FROM users WHERE email=?", (email,)):
+            errs.append("That email already has an account — sign in instead")
         if errs:
             for e in errs:
                 flash(e, "err")
-            return render_template("public/become_seller.html", form=dict(f), errs=errs), 400
+            return render_template("public/become_seller.html", form=dict(f), errs=errs[0] if errs else None), 400
 
-        email = f["email"].strip().lower()
-        if models.one("SELECT 1 FROM users WHERE email=?", (email,)):
-            flash("That email already has an account. Sign in instead.", "err")
-            return redirect(url_for("login"))
-
-        # the applicant CANNOT publish yet — they need a password after approval
-        tmp_hash = bcrypt.hashpw(os.urandom(16), bcrypt.gensalt()).decode()
+        h = bcrypt.hashpw(pw1.encode(), bcrypt.gensalt(rounds=12)).decode()
         d = models.get_db()
         try:
-            cur = d.execute("INSERT INTO users(email,hash,name,role,status) VALUES(?,?,?,'applicant','pending')",
-                            (email, tmp_hash, f["full_name"].strip()))
+            cur = d.execute(
+                "INSERT INTO users(email,username,hash,name,phone,role,status,join_reason) "
+                "VALUES(?,?,?,?,?,'seller','active',?)",
+                (email, username, h, full_name, phone, reason))
             uid = cur.lastrowid
-            phone = norm_phone(f["phone"].strip()) or re.sub(r"\D", "", f["phone"].strip())
-            d.execute("""INSERT INTO seller_applications
-                (user_id,full_name,email,phone,shop_name,shop_location,shop_address,reason,passport_photo,rules_accepted)
-                VALUES(?,?,?,?,?,?,?,?,?,1)""",
-                (uid, f["full_name"].strip(), email, phone, f["shop_name"].strip(),
-                 f["shop_location"].strip(), f.get("shop_address", "").strip(), f["reason"].strip(), pp))
-            aid = d.execute("SELECT last_insert_rowid()").fetchone()[0]
-            d.execute("UPDATE users SET application_id=? WHERE id=?", (aid, uid))
+            d.execute("""INSERT INTO seller_profiles(user_id,display_name,shop_name,location,whatsapp,contact_email)
+                         VALUES(?,?,?,?,?,?)""",
+                      (uid, username, f"{username}'s shop", "Kano Gadget Center", phone, email))
             d.commit()
-            flash("Application received. Status: Pending review.", "ok")
-            return redirect(url_for("become_seller"))
         finally:
             d.close()
+        session.clear()
+        session["uid"] = uid
+        session.permanent = True
+        flash(f"Welcome to KanoGadgets, {username}! Your seller account is live — add your first product now.", "ok")
+        return redirect(url_for("seller_home"))
     return render_template("public/become_seller.html", form={})
 
 
 @app.route("/application/done")
 def application_done():
-    return render_template("public/application_done.html")
+    return redirect(url_for("become_seller"))
 
 
-# ------------------------------------------------------------------ seller onboarding
-@app.route("/set-password/<token>", methods=["GET", "POST"])
-def set_password(token):
-    try:
-        data = invite_serializer().loads(token, max_age=60 * 60 * 72)   # 72 h
-    except Exception:
-        return render_template("public/set_password.html", invalid=True), 400
-    u = models.one("SELECT * FROM users WHERE id=?", (data.get("uid"),))
-    if not u:
-        abort(404)
-    if request.method == "POST":
-        pw1 = request.form.get("password", "")
-        pw2 = request.form.get("confirm", "")
-        if len(pw1) < 10:
-            flash("Password must be at least 10 characters.", "err")
-            return redirect(request.url)
-        if pw1 != pw2:
-            flash("Passwords do not match.", "err")
-            return redirect(request.url)
-        h = bcrypt.hashpw(pw1.encode(), bcrypt.gensalt(rounds=12)).decode()
-        d = models.get_db()
-        d.execute("UPDATE users SET hash=?, status='active', updated_at=? WHERE id=?",
-                  (h, now(), u["id"]))
-        d.commit(); d.close()
-        flash("Password saved! You can sign in to your seller dashboard now.", "ok")
-        return redirect(url_for("login"))
-    return render_template("public/set_password.html", name=u["name"])
+# (legacy invite-token route removed — sellers register instantly now)
 
 
 # ------------------------------------------------------------------ seller dashboard
@@ -436,6 +412,8 @@ def set_password(token):
 @requires_seller
 def seller_home():
     sp = models.one("SELECT * FROM seller_profiles WHERE user_id=?", (g.user["id"],))
+    if not sp:
+        return redirect(url_for("seller_profile", complete=1))
     stats = {
         "total":     models.one("SELECT COUNT(*) FROM products WHERE seller_id=?", (sp["id"],))[0],
         "published": models.one("SELECT COUNT(*) FROM products WHERE seller_id=? AND status='published'", (sp["id"],))[0],
@@ -597,9 +575,13 @@ def admin_home():
         "products":  models.one("SELECT COUNT(*) FROM products")[0],
         "published": models.one("SELECT COUNT(*) FROM products WHERE status='published'")[0],
         "flagged":   models.one("SELECT COUNT(*) FROM reports WHERE status='open' OR status='under_review'")[0],
-        "pending_applications": models.one("SELECT COUNT(*) FROM seller_applications WHERE status='pending' OR status='under_review'")[0],
+        "new_sellers": models.one("SELECT COUNT(*) FROM users WHERE role='seller' AND created_at >= datetime('now','-7 days')")[0],
     }
-    recent_apps = models.q("SELECT * FROM seller_applications ORDER BY created_at DESC LIMIT 6")
+    recent_apps = models.q("""
+        SELECT u.id, u.name AS full_name, u.username, u.email, u.phone, u.join_reason, u.created_at, u.status,
+               sp.shop_name
+        FROM users u LEFT JOIN seller_profiles sp ON sp.user_id=u.id
+        WHERE u.role='seller' ORDER BY u.created_at DESC LIMIT 6""")
     recent_products = models.q("""
         SELECT p.*, sp.shop_name,
                (SELECT file FROM product_images WHERE product_id=p.id AND is_main=1 LIMIT 1) AS main_img
@@ -609,61 +591,12 @@ def admin_home():
 
 
 @app.route("/admin/applications")
-@requires_admin
-def admin_applications():
-    status = request.args.get("status")
-    sql = "SELECT * FROM seller_applications"
-    param = ()
-    if status:
-        sql += " WHERE status=?"; param = (status,)
-    apps = models.q(sql + " ORDER BY created_at DESC", param)
-    return render_template("admin/applications.html", apps=apps, active=status)
-
-
 @app.route("/admin/application/<int:aid>")
 @requires_admin
-def admin_application_detail(aid):
-    a = models.one("SELECT a.*, u.email AS user_email FROM seller_applications a JOIN users u ON u.id=a.user_id WHERE a.id=?", (aid,))
-    if not a:
-        abort(404)
-    invite = invite_link(a["user_id"]) if a["status"] == "approved" else None
-    return render_template("admin/application.html", a=a, invite=invite)
-
-
-@app.route("/admin/application/<int:aid>/decision", methods=["POST"])
-@requires_admin
-def admin_application_decide(aid):
-    a = models.one("SELECT * FROM seller_applications WHERE id=?", (aid,))
-    if not a:
-        abort(404)
-    act = request.form.get("action")
-    reason = request.form.get("reason", "").strip()
-    if act not in ("approve", "reject", "under_review"):
-        abort(400)
-    d = models.get_db()
-    d.execute("UPDATE seller_applications SET status=?,reviewer_id=?,decided_at=?,rejection_reason=? WHERE id=?",
-              ("approved" if act == "approve" else "rejected" if act == "reject" else "under_review",
-               g.user["id"], now(), reason or None, aid))
-    if act == "approve":
-        d.execute("UPDATE users SET role='seller',status='active',updated_at=? WHERE id=?",
-                  (now(), a["user_id"]))
-        if not d.execute("SELECT 1 FROM seller_profiles WHERE user_id=?", (a["user_id"],)).fetchone():
-            d.execute("""INSERT INTO seller_profiles(user_id,display_name,shop_name,shop_description,location,whatsapp,contact_email)
-                         VALUES(?,?,?,?,?,?,?)""",
-                      (a["user_id"], a["full_name"], a["shop_name"], "", a["shop_location"],
-                       norm_phone(a["phone"]) or a["phone"], a["email"]))
-        d.execute("INSERT INTO moderation_log(actor_id,target_type,target_id,action,reason) VALUES(?,?,?,?,?)",
-                  (g.user["id"], "application", aid, "approved", f"{a['full_name']} → seller"))
-    elif act == "reject":
-        d.execute("UPDATE users SET status='rejected',updated_at=? WHERE id=?", (now(), a["user_id"]))
-        d.execute("INSERT INTO moderation_log(actor_id,target_type,target_id,action,reason) VALUES(?,?,?,?,?)",
-                  (g.user["id"], "application", aid, "rejected", reason))
-    else:
-        d.execute("INSERT INTO moderation_log(actor_id,target_type,target_id,action) VALUES(?,?,?,?)",
-                  (g.user["id"], "application", aid, "under_review"))
-    d.commit(); d.close()
-    flash(f"Application marked {act.replace('_','-')}.", "ok")
-    return redirect(url_for("admin_application_detail", aid=aid))
+def admin_applications_legacy(aid=None):
+    # seller review queue retired — registration is instant now; suspension covers abuse
+    flash("Sellers now register instantly — review/suspend them from the Sellers page.", "ok")
+    return redirect(url_for("admin_sellers"))
 
 
 @app.route("/admin/sellers")

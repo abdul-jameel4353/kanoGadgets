@@ -6,10 +6,9 @@ with real SQLite persistence, bcrypt auth, and role-enforced server-side access 
 ## Features
 - Public marketplace: browse, search, filter, categories, product details, public seller profiles
 - Direct WhatsApp contact (`wa.me` links) — no checkout, no integrated payment
-- Seller application with private passport review (never exposed publicly)
-- Owner approval gate: applicants cannot publish until approved
+- Seller self-registration (full name, email, WhatsApp phone, public username, reason) — instant access, no approval queue
 - Seller dashboard: products, profile, publish instantly; edit/delete own listings only
-- Admin: approve/reject applications, suspend/reinstate sellers, moderate listings, categories, reports
+- Admin: seller list with suspend/reinstate, moderate listings, categories, reports
 - Report system (visitor-facing, no account required) with admin resolution
 - Product moderation log and admin activity audit
 - Mobile-first responsive; navy + electric blue brand; green WhatsApp CTA; red moderation; amber pending
@@ -32,8 +31,7 @@ The first run seeds 10 starter categories and opens. Sign in as the owner, open 
 | Role | Can do |
 |---|---|
 | Visitor | browse, search, view products/sellers, submit a report |
-| Applicant | submit a seller application (no publish rights until approved) |
-| Seller | publish instantly, edit/delete own listings, manage shop profile |
+| Seller | self-registers, publish instantly, edit/delete own listings, manage shop profile |
 | Admin | moderate listings, manage categories, review applications |
 | Owner | everything, including seller suspension/removal |
 

@@ -10,12 +10,14 @@ SCHEMA = """
 CREATE TABLE IF NOT EXISTS users(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT NOT NULL UNIQUE,
+  username TEXT,                               -- public handle, chosen at signup (sellers)
   hash TEXT NOT NULL,
   name TEXT NOT NULL,
   phone TEXT,
-  role TEXT NOT NULL DEFAULT 'applicant',     -- owner | admin | seller | applicant
-  status TEXT NOT NULL DEFAULT 'pending',     -- pending | active | suspended | rejected
-  application_id INTEGER,
+  role TEXT NOT NULL DEFAULT 'seller',         -- owner | admin | seller | applicant(legacy)
+  status TEXT NOT NULL DEFAULT 'active',       -- active | suspended | pending | rejected
+  join_reason TEXT,                            -- why they joined (stored at signup)
+  application_id INTEGER,                      -- legacy
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now'))
 );
@@ -141,6 +143,14 @@ def init_db():
     os.makedirs(DATA, exist_ok=True)
     d = get_db()
     d.executescript(SCHEMA)
+    # lightweight migrations for existing databases
+    for col, ddl in [("username", "ALTER TABLE users ADD COLUMN username TEXT"),
+                     ("join_reason", "ALTER TABLE users ADD COLUMN join_reason TEXT")]:
+        try:
+            d.execute(f"SELECT {col} FROM users LIMIT 1")
+        except sqlite3.OperationalError:
+            d.execute(ddl)
+    d.execute("CREATE UNIQUE INDEX IF NOT EXISTS ux_users_username ON users(username COLLATE NOCASE) WHERE username IS NOT NULL")
     d.commit()
     return d
 

@@ -1,3 +1,5 @@
+# Netlify hosts ONLY the static preview tour (previews/).
+# The real Flask app runs on the VPS — see GUIDE-VPS.md.
 [build]
-  publish = "preview"
+  publish = "previews"
   command = ""
