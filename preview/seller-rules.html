@@ -229,6 +229,44 @@ body.nav-open .drawer{transform:none}
   .dash-nav h3{display:none}.dash-body{padding:16px}
 }
 
+  /* KanoPlug: inspired by IJB Mobile World's dark luxury design */
+@font-face{font-family:'Playfair Display';font-style:normal;font-weight:500 900;font-display:swap;src:url('static/fonts/playfair-normal.woff2') format('woff2')}
+@font-face{font-family:'Playfair Display';font-style:italic;font-weight:500 900;font-display:swap;src:url('static/fonts/playfair-italic.woff2') format('woff2')}
+:root{--blue:#d8b45a;--blue2:#f1dd9a;--navy:#070709;--navy2:#0c0c10;--card:#111116;--panel:#111116;--line:rgba(255,255,255,.08);--line2:rgba(216,180,90,.3);--txt:#f4f1e9;--font-h:'Inter',system-ui,sans-serif;--font-b:'Inter',system-ui,sans-serif;--r:20px}
+body{background:#070709;color:#f4f1e9;line-height:1.65}
+.site-head{background:rgba(8,8,11,.92);border-color:rgba(255,255,255,.08);backdrop-filter:blur(18px)}
+.brand .mk{background:linear-gradient(120deg,#f5e3a3,#d8b45a,#b0872e);color:#191204;box-shadow:0 8px 22px -8px rgba(216,180,90,.6);font-family:'Playfair Display',Georgia,serif}
+.brand .wordmark{color:#f4f1e9}.brand .wordmark em{color:#d8b45a}
+.searchbar{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.15);border-radius:999px}
+.searchbar input{min-width:0;color:#f4f1e9}.searchbar input::placeholder{color:#a49d8e}
+.btn{border-radius:999px;font-family:Inter,system-ui,sans-serif;font-weight:600;letter-spacing:.02em}
+.btn-primary{background:linear-gradient(120deg,#f5e3a3 0%,#d8b45a 48%,#b0872e 100%);color:#191204;box-shadow:0 12px 32px -10px rgba(216,180,90,.55)}
+.btn-primary:hover{color:#191204;transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.16);color:#f4f1e9}
+.btn-wa{background:linear-gradient(135deg,#1cbb5a,#25d366);color:#04220f}
+.mainnav a,.mainnav .loc,.muted,.foot-grid a{color:#a49d8e}
+.ijb-hero,.ijb-ticker{width:100vw;margin-left:calc(50% - 50vw)}
+.ijb-hero{min-height:calc(100svh - 70px);display:flex;align-items:center;text-align:left;position:relative;padding:110px 0 115px;background:linear-gradient(100deg,rgba(6,6,9,.95) 0%,rgba(6,6,9,.78) 42%,rgba(6,6,9,.3) 100%),url('static/ijb-hero.jpg') center right/cover no-repeat,#060609}
+.ijb-hero:after{content:'';position:absolute;left:0;right:0;bottom:0;height:180px;background:linear-gradient(180deg,transparent,#070709);pointer-events:none}
+.ijb-hero .hero-inner{width:100%;max-width:1240px;margin:auto;padding:0 28px;z-index:1;position:relative}
+.ijb-eyebrow{display:flex;align-items:center;gap:14px;color:#d8b45a;letter-spacing:.3em;text-transform:uppercase;font-size:.72rem;font-weight:600}
+.ijb-eyebrow:before{content:'';width:44px;height:1px;background:linear-gradient(120deg,#f5e3a3,#d8b45a,#b0872e)}
+.ijb-hero h1{font:600 clamp(2.7rem,6vw,4.6rem)/1.09 'Playfair Display',Georgia,serif;color:#f4f1e9;margin:26px 0 24px;letter-spacing:.01em}
+.ijb-hero h1 span{font-style:italic;background:linear-gradient(120deg,#f5e3a3,#d8b45a,#b0872e);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ijb-hero .sub{color:#cfc9bc;font-size:1.08rem;max-width:560px;margin:0 0 38px}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}.hero-actions .btn{padding:15px 30px}
+.ijb-hero .hero-search{max-width:510px;margin:28px 0 0}.ijb-hero .hero-search button{color:#191204;background:linear-gradient(120deg,#f5e3a3,#d8b45a,#b0872e)}
+.hero-highlights{display:flex;gap:16px;flex-wrap:wrap;margin-top:36px;color:#d6ccb8;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase}.hero-highlights i{font-style:normal;color:#d8b45a}
+.ijb-ticker{overflow:hidden;padding:15px 0;border-top:1px solid rgba(216,180,90,.3);border-bottom:1px solid rgba(216,180,90,.3);background:#0a0a0d;text-align:center}
+.ijb-ticker div{white-space:nowrap;font:500 .78rem 'Playfair Display',Georgia,serif;letter-spacing:.18em;text-transform:uppercase;color:#f1dd9a}.ijb-ticker i{font-style:normal;color:#d8b45a;margin:0 25px}
+.section{padding:58px 0}.section-head{margin-bottom:28px}.section-head h2{font:600 clamp(2rem,4vw,3rem)/1.16 'Playfair Display',Georgia,serif;letter-spacing:.01em;color:#f4f1e9}
+.cat-card,.prod-card,.form-card,.empty{background:linear-gradient(160deg,#111116,#0b0b0e);border:1px solid rgba(255,255,255,.08);border-radius:20px}
+.cat-card:hover,.prod-card:hover{border-color:rgba(216,180,90,.3);transform:translateY(-5px);box-shadow:0 26px 54px -26px rgba(216,180,90,.22)}
+.cat-card small,.prod-card .shop,.empty,.field small{color:#a49d8e}.prod-card .price{font:700 1.5rem 'Playfair Display',Georgia,serif;color:#d8b45a}
+.field input,.field select,.field textarea{background:#0b0b0e;border-color:rgba(255,255,255,.16)}.field label{color:#ddd6c8}
+.site-foot{background:#090909;border-color:rgba(216,180,90,.2)}
+@media(max-width:860px){.ijb-hero{min-height:640px;padding:90px 0 95px;background-position:65% center}.ijb-hero h1{font-size:clamp(2.7rem,10vw,4rem)}.ijb-hero .hero-inner{padding:0 22px}.ijb-hero .hero-search{order:initial}.hero-highlights{gap:10px}.section{padding:42px 0}}
+@media(max-width:560px){.hero-actions .btn{padding:13px 20px}.ijb-eyebrow{letter-spacing:.18em;font-size:.65rem}.ijb-hero .sub{font-size:1rem}.ijb-hero{min-height:620px}.ijb-ticker div{font-size:.7rem}}
   </style>
   
 </head>
