@@ -2,24 +2,25 @@
 {% block title %}KanoPlug.com — Find Your Next Gadget in Kano{% endblock %}
 {% block content %}
 
-<section class="hero">
-  <div class="glow"></div>
-  <div class="wrap">
-    <div class="badge badge-published" style="letter-spacing:.16em;font-size:10px;margin-bottom:14px">LATEST GADGETS · KANO, NIGERIA</div>
-    <h1>Find Your<br><span>Next Gadget</span></h1>
-    <p class="sub">Discover smartphones, laptops, accessories and more from sellers in Kano's gadget marketplace.</p>
-    <form class="searchbar" action="{{ url_for('browse') }}" method="get">
-      <input name="q" placeholder="Search gadgets, brands, or categories…">
-      <button type="submit">⌕</button>
-    </form>
-    <a href="{{ url_for('browse') }}" class="btn btn-primary" style="margin-top:20px">Explore Gadgets</a>
-    <div class="trust">
-      <div class="t"><i>🤝</i><strong>Real Sellers</strong><span>Kano Gadget Center shops</span></div>
-      <div class="t"><i>📱</i><strong>Wide Selection</strong><span>Latest &amp; popular gadgets</span></div>
-      <div class="t"><i>💬</i><strong>WhatsApp Contact</strong><span>Chat with sellers directly</span></div>
+<section class="hero ijb-hero">
+  <div class="wrap hero-inner">
+    <div class="ijb-eyebrow">Kano, Nigeria · Your gadget marketplace</div>
+    <h1>Find Your Next<br><span>Gadget in Kano.</span></h1>
+    <p class="sub">Discover smartphones, laptops and accessories from local sellers. Find what you love and connect directly on WhatsApp.</p>
+    <div class="hero-actions">
+      <a href="{{ url_for('browse') }}" class="btn btn-primary">Explore the Collection <span aria-hidden="true">→</span></a>
+      <a href="{{ url_for('categories_page') }}" class="btn btn-ghost">Browse Categories</a>
     </div>
+    <form class="searchbar hero-search" action="{{ url_for('browse') }}" method="get">
+      <input name="q" type="search" aria-label="Search gadgets" placeholder="Search gadgets, brands, or categories…">
+      <button type="submit" aria-label="Search">⌕</button>
+    </form>
+    <div class="hero-highlights"><span>Local Sellers</span><i>✦</i><span>Gadgets &amp; Accessories</span><i>✦</i><span>Chat on WhatsApp</span></div>
   </div>
 </section>
+<div class="ijb-ticker" aria-label="Kano marketplace: local sellers, gadgets and direct WhatsApp contact">
+ <div>Based in Kano <i>✦</i> Discover Gadgets <i>✦</i> Shop Local Sellers <i>✦</i> Connect on WhatsApp <i>✦</i> Based in Kano <i>✦</i> Discover Gadgets <i>✦</i> Shop Local Sellers <i>✦</i> Connect on WhatsApp</div>
+</div>
 
 <section class="section">
   <div class="wrap">
