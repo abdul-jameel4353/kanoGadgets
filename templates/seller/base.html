@@ -157,6 +157,17 @@ h1,h2,h3{font-family:var(--font-h);letter-spacing:-.025em;color:#fff}
   .dash-nav h3,.dash-nav a::before{display:none}
   .dash-body{padding:18px}.two-col{grid-template-columns:1fr!important}
 }
+
+/* IJB-inspired dark/gold chrome; white content panels remain readable */
+@font-face{font-family:'Playfair Display';font-style:normal;font-weight:500 900;font-display:swap;src:url('/static/fonts/playfair-normal.woff2') format('woff2')}
+:root{--blue:#d8b45a;--blue2:#f1dd9a;--navy:#070709;--navy2:#0c0c10;--panel:#111116;--line:rgba(216,180,90,.14);--line2:rgba(216,180,90,.3)}
+body{background:radial-gradient(900px 500px at 100% -10%,rgba(216,180,90,.09),transparent 65%),#070709}
+.topbar{background:rgba(8,8,11,.94)} .dash-nav{background:linear-gradient(180deg,#0c0c10,#070709)}
+.dash-header h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;letter-spacing:.01em}
+.btn-primary{background:linear-gradient(120deg,#f5e3a3,#d8b45a,#b0872e);color:#191204;border-radius:999px}
+.btn-primary:hover{color:#191204}
+.brand .mk{background:linear-gradient(120deg,#f5e3a3,#d8b45a,#b0872e);color:#191204}
+
 </style>
 </head>
 <body>
